@@ -8,7 +8,7 @@ export default function Index() {
       <TouchableOpacity
         className="btn-primary mt-6"
         activeOpacity={0.85}
-        onPress={() => router.push("/onboarding" as never)}
+        onPress={() => router.push("/onboarding")}
       >
         <Text className="btn-primary-label">View Onboarding</Text>
       </TouchableOpacity>
