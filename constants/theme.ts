@@ -1,53 +1,76 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Design tokens — use these with StyleSheet.create() or inline styles
+ * for components that don't support className (SafeAreaView, Pressable
+ * pressed states, Animated.View, etc.). See AGENTS.md style exception rules.
+ *
+ * For className-based styling use the Tailwind utilities in global.css.
  */
 
-import { Platform } from 'react-native';
+// ─── Colors ──────────────────────────────────────────────────────────────────
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+export const colors = {
+  primary: {
+    linguaPurple: "#6c4ef5",
+    linguaDeepPurple: "#5b3bf6",
+    linguaBlue: "#4d88ff",
+    linguaGreen: "#21c16b",
+  },
+  semantic: {
+    success: "#21c16b",
+    warning: "#ffcb00",
+    streak: "#ff8a00",
+    error: "#ff4d4f",
+    info: "#4d88ff",
+  },
+  neutral: {
+    textPrimary: "#001328",
+    textSecondary: "#6b7280",
+    border: "#e5e7eb",
+    surface: "#f6f7fb",
+    background: "#ffffff",
+  },
+} as const;
 
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
+// ─── Fonts ────────────────────────────────────────────────────────────────────
+// Match the keys used in useFonts() in app/_layout.tsx
 
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  },
-});
+export const fonts = {
+  regular: "Poppins-Regular",
+  medium: "Poppins-Medium",
+  semiBold: "Poppins-SemiBold",
+  bold: "Poppins-Bold",
+} as const;
+
+// ─── Typography ───────────────────────────────────────────────────────────────
+// lineHeight = Math.round(fontSize * multiplier)
+// H1: 32 × 1.2 = 38   H2: 24 × 1.3 = 31   H3: 20 × 1.3 = 26
+// H4: 16 × 1.4 = 22   bodyLg: 16 × 1.6 = 26  bodyMd: 14 × 1.6 = 22
+// bodySm: 13 × 1.6 = 21  caption: 11 × 1.4 = 15
+
+export const typography = {
+  h1: { fontSize: 32, lineHeight: 38, fontFamily: fonts.bold },
+  h2: { fontSize: 24, lineHeight: 31, fontFamily: fonts.semiBold },
+  h3: { fontSize: 20, lineHeight: 26, fontFamily: fonts.semiBold },
+  h4: { fontSize: 16, lineHeight: 22, fontFamily: fonts.medium },
+  bodyLarge: { fontSize: 16, lineHeight: 26, fontFamily: fonts.regular },
+  bodyMedium: { fontSize: 14, lineHeight: 22, fontFamily: fonts.regular },
+  bodySmall: { fontSize: 13, lineHeight: 21, fontFamily: fonts.regular },
+  caption: { fontSize: 11, lineHeight: 15, fontFamily: fonts.regular },
+} as const;
+
+// ─── Border Radius ────────────────────────────────────────────────────────────
+
+export const radius = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  full: 9999,
+} as const;
+
+// ─── Spacing ──────────────────────────────────────────────────────────────────
+
+export const spacing = {
+  screenPadding: 24,
+} as const;

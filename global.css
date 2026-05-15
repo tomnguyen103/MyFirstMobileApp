@@ -1,0 +1,326 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+/* =============================================
+   DESIGN TOKENS
+   ============================================= */
+
+@theme {
+  /* PRIMARY */
+  --color-lingua-purple: #6c4ef5;
+  --color-lingua-deep-purple: #5b3bf6;
+  --color-lingua-blue: #4d88ff;
+  --color-lingua-green: #21c16b;
+
+  /* SEMANTIC */
+  --color-success: #21c16b;
+  --color-warning: #ffcb00;
+  --color-streak: #ff8a00;
+  --color-error: #ff4d4f;
+  --color-info: #4d88ff;
+
+  /* NEUTRALS */
+  --color-text-primary: #001328;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-surface: #f6f7fb;
+  --color-background: #ffffff;
+
+  /* FONTS — each weight is a separate loaded font in React Native */
+  --font-poppins: "Poppins-Regular";
+  --font-poppins-medium: "Poppins-Medium";
+  --font-poppins-semibold: "Poppins-SemiBold";
+  --font-poppins-bold: "Poppins-Bold";
+
+  /* TYPOGRAPHY SCALE */
+  --text-h1: 32px;
+  --text-h1--line-height: 1.2;
+  --text-h2: 24px;
+  --text-h2--line-height: 1.3;
+  --text-h3: 20px;
+  --text-h3--line-height: 1.3;
+  --text-h4: 16px;
+  --text-h4--line-height: 1.4;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-md: 14px;
+  --text-body-md--line-height: 1.6;
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 1.6;
+  --text-caption: 11px;
+  --text-caption--line-height: 1.4;
+
+  /* BORDER RADIUS */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* =============================================
+   TYPOGRAPHY
+   Usage: className="h1"  className="body-md"
+   ============================================= */
+
+@utility h1 {
+  font-family: "Poppins-Bold";
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 38px;
+  color: #001328;
+}
+
+@utility h2 {
+  font-family: "Poppins-SemiBold";
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 31px;
+  color: #001328;
+}
+
+@utility h3 {
+  font-family: "Poppins-SemiBold";
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  color: #001328;
+}
+
+@utility h4 {
+  font-family: "Poppins-Medium";
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  color: #001328;
+}
+
+@utility body-lg {
+  font-family: "Poppins-Regular";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  color: #001328;
+}
+
+@utility body-md {
+  font-family: "Poppins-Regular";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #001328;
+}
+
+@utility body-sm {
+  font-family: "Poppins-Regular";
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 21px;
+  color: #6b7280;
+}
+
+@utility caption {
+  font-family: "Poppins-Regular";
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 15px;
+  color: #6b7280;
+}
+
+/* =============================================
+   CARDS
+   Usage: className="card"  className="card-outlined"
+   ============================================= */
+
+@utility card {
+  background-color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+@utility card-surface {
+  background-color: #f6f7fb;
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+@utility card-outlined {
+  background-color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border-width: 1px;
+  border-color: #e5e7eb;
+}
+
+/* =============================================
+   BUTTONS
+   Usage: className="btn-primary"  className="btn-primary-label"
+   ============================================= */
+
+@utility btn-primary {
+  background-color: #6c4ef5;
+  border-radius: var(--radius-xl);
+  align-items: center;
+  justify-content: center;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+@utility btn-primary-label {
+  font-family: "Poppins-Bold";
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+@utility btn-secondary {
+  background-color: transparent;
+  border-width: 1px;
+  border-color: #6c4ef5;
+  border-radius: var(--radius-xl);
+  align-items: center;
+  justify-content: center;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+@utility btn-secondary-label {
+  font-family: "Poppins-SemiBold";
+  font-size: 16px;
+  font-weight: 600;
+  color: #6c4ef5;
+}
+
+@utility btn-success {
+  background-color: #21c16b;
+  border-radius: var(--radius-xl);
+  align-items: center;
+  justify-content: center;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+@utility btn-success-label {
+  font-family: "Poppins-Bold";
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+@utility btn-ghost {
+  background-color: transparent;
+  border-radius: var(--radius-xl);
+  align-items: center;
+  justify-content: center;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+@utility btn-ghost-label {
+  font-family: "Poppins-SemiBold";
+  font-size: 16px;
+  font-weight: 600;
+  color: #6c4ef5;
+}
+
+/* =============================================
+   BADGES
+   Usage: className="badge-success"  className="badge-label"
+   ============================================= */
+
+@utility badge-success {
+  background-color: #21c16b;
+  border-radius: var(--radius-full);
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility badge-warning {
+  background-color: #ffcb00;
+  border-radius: var(--radius-full);
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility badge-streak {
+  background-color: #ff8a00;
+  border-radius: var(--radius-full);
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility badge-error {
+  background-color: #ff4d4f;
+  border-radius: var(--radius-full);
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility badge-info {
+  background-color: #4d88ff;
+  border-radius: var(--radius-full);
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility badge-label {
+  font-family: "Poppins-SemiBold";
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* =============================================
+   MISC
+   ============================================= */
+
+@utility divider {
+  border-bottom-width: 1px;
+  border-color: #e5e7eb;
+}
+
+@utility screen {
+  flex: 1;
+  background-color: #ffffff;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@utility screen-surface {
+  flex: 1;
+  background-color: #f6f7fb;
+  padding-left: 24px;
+  padding-right: 24px;
+}
