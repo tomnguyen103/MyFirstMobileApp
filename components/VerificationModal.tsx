@@ -127,7 +127,7 @@ export default function VerificationModal({
               disabled={isVerifying}
             >
               <Text style={styles.resendText}>
-                Didn't receive it?{" "}
+                Didn&apos;t receive it?{" "}
                 <Text style={styles.resendLink}>Resend code</Text>
               </Text>
             </TouchableOpacity>

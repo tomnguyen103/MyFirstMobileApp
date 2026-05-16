@@ -13,14 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth, useSignUp, useSSO } from "@clerk/expo";
 import { router } from "expo-router";
 import { useState } from "react";
-import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session";
 import { Ionicons } from "@expo/vector-icons";
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
 import GoogleIcon from "@/components/GoogleIcon";
-
-WebBrowser.maybeCompleteAuthSession();
 
 export default function SignUpScreen() {
   const { isSignedIn } = useAuth();
