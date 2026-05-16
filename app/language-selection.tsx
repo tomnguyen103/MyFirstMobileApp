@@ -14,10 +14,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { languages } from "@/data/languages";
 import { Language } from "@/types/learning";
 import { images } from "@/constants/images";
+import { useLanguageStore } from "@/store/languageStore";
 
 export default function LanguageSelectionScreen() {
+  const { selectedLanguageId, setSelectedLanguage } = useLanguageStore();
   const [search, setSearch] = useState("");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(selectedLanguageId);
 
   const filtered = languages.filter((lang) =>
     lang.name.toLowerCase().includes(search.toLowerCase())
@@ -25,7 +27,8 @@ export default function LanguageSelectionScreen() {
 
   function handleConfirm() {
     if (selectedId) {
-      router.back();
+      setSelectedLanguage(selectedId);
+      router.replace("/");
     }
   }
 
@@ -60,9 +63,13 @@ export default function LanguageSelectionScreen() {
     <SafeAreaView style={styles.safe}>
       {/* Header */}
       <View className="flex-row items-center px-6 py-3">
-        <TouchableOpacity onPress={() => router.back()} hitSlop={8}>
-          <Ionicons name="chevron-back" size={24} color="#001328" />
-        </TouchableOpacity>
+        {selectedLanguageId ? (
+          <TouchableOpacity onPress={() => router.back()} hitSlop={8}>
+            <Ionicons name="chevron-back" size={24} color="#001328" />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.headerSpacer} />
+        )}
         <Text
           className="font-poppins-semibold text-text-primary flex-1 text-center"
           style={styles.title}

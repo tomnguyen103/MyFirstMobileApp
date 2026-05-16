@@ -13,14 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSignIn, useSSO } from "@clerk/expo";
 import { router } from "expo-router";
 import { useState } from "react";
-import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session";
 import { Ionicons } from "@expo/vector-icons";
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
 import GoogleIcon from "@/components/GoogleIcon";
-
-WebBrowser.maybeCompleteAuthSession();
 
 export default function SignInScreen() {
   const { signIn, errors, fetchStatus } = useSignIn();
@@ -191,7 +188,7 @@ export default function SignInScreen() {
 
             {/* Footer */}
             <View className="flex-row items-center justify-center mt-8">
-              <Text style={styles.footerText}>Don't have an account? </Text>
+              <Text style={styles.footerText}>Don&apos;t have an account? </Text>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => router.replace("/(auth)/sign-up")}
