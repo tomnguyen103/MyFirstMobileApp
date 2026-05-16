@@ -1,0 +1,288 @@
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Image,
+  StyleSheet,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useSignIn, useSSO } from "@clerk/expo";
+import { router } from "expo-router";
+import { useState } from "react";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri } from "expo-auth-session";
+import { Ionicons } from "@expo/vector-icons";
+import { images } from "@/constants/images";
+import VerificationModal from "@/components/VerificationModal";
+import GoogleIcon from "@/components/GoogleIcon";
+
+WebBrowser.maybeCompleteAuthSession();
+
+export default function SignInScreen() {
+  const { signIn, errors, fetchStatus } = useSignIn();
+  const { startSSOFlow } = useSSO();
+
+  const [email, setEmail] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalError, setModalError] = useState<string | undefined>();
+
+  // Step 1: Send a sign-in code to the user's email
+  async function handleSignIn() {
+    if (!email) return;
+
+    const { error } = await signIn.emailCode.sendCode({ emailAddress: email });
+    if (error) {
+      console.error(JSON.stringify(error, null, 2));
+      return;
+    }
+
+    setModalVisible(true);
+  }
+
+  // Step 2: Verify the code and finalize the session
+  async function handleVerify(code: string) {
+    setModalError(undefined);
+
+    const { error } = await signIn.emailCode.verifyCode({ code });
+    if (error) {
+      console.error(JSON.stringify(error, null, 2));
+      setModalError(error.message);
+      return;
+    }
+
+    if (signIn.status === "complete") {
+      await signIn.finalize({
+        navigate: ({ session }) => {
+          if (session?.currentTask) return;
+          router.replace("/");
+        },
+      });
+      setModalVisible(false);
+    }
+  }
+
+  async function handleResend() {
+    await signIn.emailCode.sendCode({ emailAddress: email });
+  }
+
+  async function handleSSO(strategy: "oauth_google" | "oauth_facebook" | "oauth_apple") {
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy,
+        redirectUrl: makeRedirectUri({ path: "oauth-callback" }),
+      });
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        router.replace("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="flex-1 px-6 pb-8">
+            {/* Back */}
+            <TouchableOpacity
+              className="mt-2 self-start"
+              activeOpacity={0.7}
+              onPress={() => router.replace("/onboarding")}
+            >
+              <Ionicons name="chevron-back" size={24} color="#001328" />
+            </TouchableOpacity>
+
+            {/* Heading */}
+            <View className="mt-6">
+              <Text className="h2">Welcome back</Text>
+              <Text className="body-md text-text-secondary mt-1">
+                Login to continue your journey 👋
+              </Text>
+            </View>
+
+            {/* Mascot */}
+            <View className="items-center mt-4">
+              <Image
+                source={images.mascotAuth}
+                style={{ width: 160, height: 140 }}
+                resizeMode="contain"
+              />
+            </View>
+
+            {/* Form */}
+            <View className="mt-5">
+              <View style={styles.inputWrap}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="alex@gmail.com"
+                  placeholderTextColor="#9ca3af"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  style={styles.input}
+                />
+              </View>
+              {errors?.fields?.identifier && (
+                <Text className="body-sm text-error mt-1">
+                  {errors.fields.identifier.message}
+                </Text>
+              )}
+              {errors?.global?.map((e, i) => (
+                <Text key={i} className="body-sm text-error mt-1">
+                  {e.message}
+                </Text>
+              ))}
+            </View>
+
+            {/* CTA */}
+            <TouchableOpacity
+              className="btn-primary mt-6"
+              activeOpacity={0.85}
+              disabled={!email || fetchStatus === "fetching"}
+              onPress={handleSignIn}
+            >
+              <Text className="btn-primary-label">Sign In</Text>
+            </TouchableOpacity>
+
+            {/* Divider */}
+            <View className="flex-row items-center gap-3 mt-6">
+              <View className="flex-1 h-[1px] bg-border" />
+              <Text className="caption text-text-secondary">or continue with</Text>
+              <View className="flex-1 h-[1px] bg-border" />
+            </View>
+
+            {/* Social buttons */}
+            <View className="mt-4 gap-3">
+              <SocialButton
+                iconElement={<GoogleIcon size={20} />}
+                label="Continue with Google"
+                onPress={() => handleSSO("oauth_google")}
+              />
+              <SocialButton
+                icon="logo-facebook"
+                label="Continue with Facebook"
+                iconColor="#1877F2"
+                onPress={() => handleSSO("oauth_facebook")}
+              />
+              <SocialButton
+                icon="logo-apple"
+                label="Continue with Apple"
+                iconColor="#000000"
+                onPress={() => handleSSO("oauth_apple")}
+              />
+            </View>
+
+            {/* Footer */}
+            <View className="flex-row items-center justify-center mt-8">
+              <Text style={styles.footerText}>Don't have an account? </Text>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => router.replace("/(auth)/sign-up")}
+              >
+                <Text style={styles.footerLink}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      <VerificationModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onVerify={handleVerify}
+        onResend={handleResend}
+        email={email}
+        error={modalError}
+      />
+    </SafeAreaView>
+  );
+}
+
+function SocialButton({
+  icon,
+  iconColor,
+  iconElement,
+  label,
+  onPress,
+}: {
+  icon?: React.ComponentProps<typeof Ionicons>["name"];
+  iconColor?: string;
+  iconElement?: React.ReactNode;
+  label: string;
+  onPress?: () => void;
+}) {
+  return (
+    <TouchableOpacity activeOpacity={0.85} style={styles.socialBtn} onPress={onPress}>
+      {iconElement ?? <Ionicons name={icon!} size={20} color={iconColor} />}
+      <Text style={styles.socialLabel}>{label}</Text>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: "#fff" },
+  inputWrap: {
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 12,
+  },
+  label: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 11,
+    color: "#6b7280",
+    marginBottom: 4,
+  },
+  input: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 14,
+    color: "#001328",
+    padding: 0,
+  },
+  socialBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
+  },
+  socialLabel: {
+    fontFamily: "Poppins-Medium",
+    fontSize: 14,
+    color: "#001328",
+    flex: 1,
+    textAlign: "center",
+  },
+  footerText: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 13,
+    color: "#6b7280",
+  },
+  footerLink: {
+    fontFamily: "Poppins-SemiBold",
+    fontSize: 13,
+    color: "#6c4ef5",
+  },
+});
