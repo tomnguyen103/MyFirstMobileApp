@@ -32,7 +32,6 @@ yarn-error.*
 
 # local env files
 .env*.local
-prompts
 
 # typescript
 *.tsbuildinfo

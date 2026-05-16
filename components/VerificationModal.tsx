@@ -10,16 +10,26 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRef, useState, useEffect } from "react";
-import { router } from "expo-router";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
+  onVerify: (code: string) => Promise<void>;
+  onResend: () => Promise<void>;
   email: string;
+  error?: string;
 }
 
-export default function VerificationModal({ visible, onClose, email }: Props) {
+export default function VerificationModal({
+  visible,
+  onClose,
+  onVerify,
+  onResend,
+  email,
+  error,
+}: Props) {
   const [code, setCode] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -30,14 +40,15 @@ export default function VerificationModal({ visible, onClose, email }: Props) {
     }
   }, [visible]);
 
-  function handleChange(text: string) {
+  async function handleChange(text: string) {
     const digits = text.replace(/\D/g, "").slice(0, 6);
     setCode(digits);
-    if (digits.length === 6) {
-      setTimeout(() => {
-        onClose();
-        router.replace("/");
-      }, 300);
+
+    if (digits.length === 6 && !isVerifying) {
+      setIsVerifying(true);
+      await onVerify(digits);
+      setIsVerifying(false);
+      setCode(""); // clear so the user can retry on error
     }
   }
 
@@ -71,7 +82,7 @@ export default function VerificationModal({ visible, onClose, email }: Props) {
               <Text style={styles.emailHighlight}>{maskedEmail}</Text>
             </Text>
 
-            {/* OTP boxes with hidden input overlay */}
+            {/* OTP input — 6 boxes with a hidden overlay TextInput */}
             <View style={styles.otpContainer}>
               <View className="flex-row justify-center gap-3">
                 {Array.from({ length: 6 }).map((_, i) => {
@@ -91,7 +102,6 @@ export default function VerificationModal({ visible, onClose, email }: Props) {
                   );
                 })}
               </View>
-              {/* Invisible overlay input — captures all taps + keyboard */}
               <TextInput
                 ref={inputRef}
                 value={code}
@@ -99,11 +109,23 @@ export default function VerificationModal({ visible, onClose, email }: Props) {
                 keyboardType="number-pad"
                 maxLength={6}
                 caretHidden
+                editable={!isVerifying}
                 style={[StyleSheet.absoluteFillObject, { opacity: 0 }]}
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.7} style={{ marginTop: 28 }}>
+            {/* Error message */}
+            {error ? (
+              <Text className="body-sm text-error text-center mt-3">{error}</Text>
+            ) : null}
+
+            {/* Resend */}
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{ marginTop: 28 }}
+              onPress={onResend}
+              disabled={isVerifying}
+            >
               <Text style={styles.resendText}>
                 Didn't receive it?{" "}
                 <Text style={styles.resendLink}>Resend code</Text>

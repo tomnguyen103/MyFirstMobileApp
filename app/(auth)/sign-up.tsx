@@ -10,18 +10,82 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth, useSignUp, useSSO } from "@clerk/expo";
 import { router } from "expo-router";
 import { useState } from "react";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri } from "expo-auth-session";
 import { Ionicons } from "@expo/vector-icons";
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
 import GoogleIcon from "@/components/GoogleIcon";
 
+WebBrowser.maybeCompleteAuthSession();
+
 export default function SignUpScreen() {
+  const { isSignedIn } = useAuth();
+  const { signUp, errors, fetchStatus } = useSignUp();
+  const { startSSOFlow } = useSSO();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalError, setModalError] = useState<string | undefined>();
+
+  // Redirect if already signed in (auth guard in _layout handles it, this prevents flash)
+  if (signUp.status === "complete" || isSignedIn) return null;
+
+  async function handleSignUp() {
+    if (!email || !password) return;
+
+    const { error } = await signUp.password({ emailAddress: email, password });
+    if (error) {
+      console.error(JSON.stringify(error, null, 2));
+      return;
+    }
+
+    // Email verification required — send the code
+    await signUp.verifications.sendEmailCode();
+    setModalVisible(true);
+  }
+
+  async function handleVerify(code: string) {
+    setModalError(undefined);
+
+    await signUp.verifications.verifyEmailCode({ code });
+
+    if (signUp.status === "complete") {
+      await signUp.finalize({
+        navigate: ({ session }) => {
+          if (session?.currentTask) return;
+          router.replace("/");
+        },
+      });
+      setModalVisible(false);
+    } else {
+      setModalError("Incorrect code. Please try again.");
+    }
+  }
+
+  async function handleResend() {
+    await signUp.verifications.sendEmailCode();
+  }
+
+  async function handleSSO(strategy: "oauth_google" | "oauth_facebook" | "oauth_apple") {
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy,
+        redirectUrl: makeRedirectUri({ path: "oauth-callback" }),
+      });
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        router.replace("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -40,7 +104,7 @@ export default function SignUpScreen() {
             <TouchableOpacity
               className="mt-2 self-start"
               activeOpacity={0.7}
-              onPress={() => router.back()}
+              onPress={() => router.replace("/onboarding")}
             >
               <Ionicons name="chevron-back" size={24} color="#001328" />
             </TouchableOpacity>
@@ -65,53 +129,75 @@ export default function SignUpScreen() {
             {/* Form */}
             <View className="mt-5 gap-4">
               {/* Email */}
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                  value={email}
-                  onChangeText={setEmail}
-                  placeholder="alex@gmail.com"
-                  placeholderTextColor="#9ca3af"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  underlineColorAndroid="transparent"
-                  style={styles.input}
-                />
-              </View>
-
-              {/* Password */}
-              <View style={[styles.inputWrap, styles.row]}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.label}>Password</Text>
+              <View>
+                <View style={styles.inputWrap}>
+                  <Text style={styles.label}>Email</Text>
                   <TextInput
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="••••••••"
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="alex@gmail.com"
                     placeholderTextColor="#9ca3af"
-                    secureTextEntry={!showPassword}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
                     underlineColorAndroid="transparent"
                     style={styles.input}
                   />
                 </View>
-                <TouchableOpacity
-                  onPress={() => setShowPassword((v) => !v)}
-                  style={{ padding: 4 }}
-                >
-                  <Ionicons
-                    name={showPassword ? "eye-off-outline" : "eye-outline"}
-                    size={20}
-                    color="#9ca3af"
-                  />
-                </TouchableOpacity>
+                {errors?.fields?.emailAddress && (
+                  <Text className="body-sm text-error mt-1">
+                    {errors.fields.emailAddress.message}
+                  </Text>
+                )}
+              </View>
+
+              {/* Password */}
+              <View>
+                <View style={[styles.inputWrap, styles.row]}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                      value={password}
+                      onChangeText={setPassword}
+                      placeholder="••••••••"
+                      placeholderTextColor="#9ca3af"
+                      secureTextEntry={!showPassword}
+                      underlineColorAndroid="transparent"
+                      style={styles.input}
+                    />
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => setShowPassword((v) => !v)}
+                    style={{ padding: 4 }}
+                  >
+                    <Ionicons
+                      name={showPassword ? "eye-off-outline" : "eye-outline"}
+                      size={20}
+                      color="#9ca3af"
+                    />
+                  </TouchableOpacity>
+                </View>
+                {errors?.fields?.password && (
+                  <Text className="body-sm text-error mt-1">
+                    {errors.fields.password.message}
+                  </Text>
+                )}
               </View>
             </View>
+
+            {/* Global errors */}
+            {errors?.global?.map((e, i) => (
+              <Text key={i} className="body-sm text-error mt-2">
+                {e.message}
+              </Text>
+            ))}
 
             {/* CTA */}
             <TouchableOpacity
               className="btn-primary mt-6"
               activeOpacity={0.85}
-              onPress={() => email && setModalVisible(true)}
+              disabled={!email || !password || fetchStatus === "fetching"}
+              onPress={handleSignUp}
             >
               <Text className="btn-primary-label">Sign Up</Text>
             </TouchableOpacity>
@@ -128,16 +214,19 @@ export default function SignUpScreen() {
               <SocialButton
                 iconElement={<GoogleIcon size={20} />}
                 label="Continue with Google"
+                onPress={() => handleSSO("oauth_google")}
               />
               <SocialButton
                 icon="logo-facebook"
                 label="Continue with Facebook"
                 iconColor="#1877F2"
+                onPress={() => handleSSO("oauth_facebook")}
               />
               <SocialButton
                 icon="logo-apple"
                 label="Continue with Apple"
                 iconColor="#000000"
+                onPress={() => handleSSO("oauth_apple")}
               />
             </View>
 
@@ -146,7 +235,7 @@ export default function SignUpScreen() {
               <Text style={styles.footerText}>Already have an account? </Text>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => router.push("/(auth)/sign-in")}
+                onPress={() => router.replace("/(auth)/sign-in")}
               >
                 <Text style={styles.footerLink}>Log in</Text>
               </TouchableOpacity>
@@ -155,10 +244,16 @@ export default function SignUpScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
 
+      {/* Required for Clerk bot protection */}
+      <View nativeID="clerk-captcha" />
+
       <VerificationModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        onVerify={handleVerify}
+        onResend={handleResend}
         email={email}
+        error={modalError}
       />
     </SafeAreaView>
   );
@@ -169,17 +264,17 @@ function SocialButton({
   iconColor,
   iconElement,
   label,
+  onPress,
 }: {
   icon?: React.ComponentProps<typeof Ionicons>["name"];
   iconColor?: string;
   iconElement?: React.ReactNode;
   label: string;
+  onPress?: () => void;
 }) {
   return (
-    <TouchableOpacity activeOpacity={0.85} style={styles.socialBtn}>
-      {iconElement ?? (
-        <Ionicons name={icon!} size={20} color={iconColor} />
-      )}
+    <TouchableOpacity activeOpacity={0.85} style={styles.socialBtn} onPress={onPress}>
+      {iconElement ?? <Ionicons name={icon!} size={20} color={iconColor} />}
       <Text style={styles.socialLabel}>{label}</Text>
     </TouchableOpacity>
   );

@@ -10,16 +10,79 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSignIn, useSSO } from "@clerk/expo";
 import { router } from "expo-router";
 import { useState } from "react";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri } from "expo-auth-session";
 import { Ionicons } from "@expo/vector-icons";
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
 import GoogleIcon from "@/components/GoogleIcon";
 
+WebBrowser.maybeCompleteAuthSession();
+
 export default function SignInScreen() {
+  const { signIn, errors, fetchStatus } = useSignIn();
+  const { startSSOFlow } = useSSO();
+
   const [email, setEmail] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalError, setModalError] = useState<string | undefined>();
+
+  // Step 1: Send a sign-in code to the user's email
+  async function handleSignIn() {
+    if (!email) return;
+
+    const { error } = await signIn.emailCode.sendCode({ emailAddress: email });
+    if (error) {
+      console.error(JSON.stringify(error, null, 2));
+      return;
+    }
+
+    setModalVisible(true);
+  }
+
+  // Step 2: Verify the code and finalize the session
+  async function handleVerify(code: string) {
+    setModalError(undefined);
+
+    const { error } = await signIn.emailCode.verifyCode({ code });
+    if (error) {
+      console.error(JSON.stringify(error, null, 2));
+      setModalError(error.message);
+      return;
+    }
+
+    if (signIn.status === "complete") {
+      await signIn.finalize({
+        navigate: ({ session }) => {
+          if (session?.currentTask) return;
+          router.replace("/");
+        },
+      });
+      setModalVisible(false);
+    }
+  }
+
+  async function handleResend() {
+    await signIn.emailCode.sendCode({ emailAddress: email });
+  }
+
+  async function handleSSO(strategy: "oauth_google" | "oauth_facebook" | "oauth_apple") {
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy,
+        redirectUrl: makeRedirectUri({ path: "oauth-callback" }),
+      });
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        router.replace("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -38,7 +101,7 @@ export default function SignInScreen() {
             <TouchableOpacity
               className="mt-2 self-start"
               activeOpacity={0.7}
-              onPress={() => router.back()}
+              onPress={() => router.replace("/onboarding")}
             >
               <Ionicons name="chevron-back" size={24} color="#001328" />
             </TouchableOpacity>
@@ -60,7 +123,7 @@ export default function SignInScreen() {
               />
             </View>
 
-            {/* Form — email only */}
+            {/* Form */}
             <View className="mt-5">
               <View style={styles.inputWrap}>
                 <Text style={styles.label}>Email</Text>
@@ -76,13 +139,24 @@ export default function SignInScreen() {
                   style={styles.input}
                 />
               </View>
+              {errors?.fields?.identifier && (
+                <Text className="body-sm text-error mt-1">
+                  {errors.fields.identifier.message}
+                </Text>
+              )}
+              {errors?.global?.map((e, i) => (
+                <Text key={i} className="body-sm text-error mt-1">
+                  {e.message}
+                </Text>
+              ))}
             </View>
 
             {/* CTA */}
             <TouchableOpacity
               className="btn-primary mt-6"
               activeOpacity={0.85}
-              onPress={() => email && setModalVisible(true)}
+              disabled={!email || fetchStatus === "fetching"}
+              onPress={handleSignIn}
             >
               <Text className="btn-primary-label">Sign In</Text>
             </TouchableOpacity>
@@ -99,16 +173,19 @@ export default function SignInScreen() {
               <SocialButton
                 iconElement={<GoogleIcon size={20} />}
                 label="Continue with Google"
+                onPress={() => handleSSO("oauth_google")}
               />
               <SocialButton
                 icon="logo-facebook"
                 label="Continue with Facebook"
                 iconColor="#1877F2"
+                onPress={() => handleSSO("oauth_facebook")}
               />
               <SocialButton
                 icon="logo-apple"
                 label="Continue with Apple"
                 iconColor="#000000"
+                onPress={() => handleSSO("oauth_apple")}
               />
             </View>
 
@@ -117,7 +194,7 @@ export default function SignInScreen() {
               <Text style={styles.footerText}>Don't have an account? </Text>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => router.push("/(auth)/sign-up")}
+                onPress={() => router.replace("/(auth)/sign-up")}
               >
                 <Text style={styles.footerLink}>Sign Up</Text>
               </TouchableOpacity>
@@ -129,7 +206,10 @@ export default function SignInScreen() {
       <VerificationModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        onVerify={handleVerify}
+        onResend={handleResend}
         email={email}
+        error={modalError}
       />
     </SafeAreaView>
   );
@@ -140,14 +220,16 @@ function SocialButton({
   iconColor,
   iconElement,
   label,
+  onPress,
 }: {
   icon?: React.ComponentProps<typeof Ionicons>["name"];
   iconColor?: string;
   iconElement?: React.ReactNode;
   label: string;
+  onPress?: () => void;
 }) {
   return (
-    <TouchableOpacity activeOpacity={0.85} style={styles.socialBtn}>
+    <TouchableOpacity activeOpacity={0.85} style={styles.socialBtn} onPress={onPress}>
       {iconElement ?? <Ionicons name={icon!} size={20} color={iconColor} />}
       <Text style={styles.socialLabel}>{label}</Text>
     </TouchableOpacity>

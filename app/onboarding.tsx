@@ -1,9 +1,14 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { useAuth } from "@clerk/expo";
+import { Redirect, router } from "expo-router";
 import { images } from "@/constants/images";
 
 export default function OnboardingScreen() {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) return null;
+  if (isSignedIn) return <Redirect href="/" />;
   return (
     <SafeAreaView style={styles.safeArea}>
       <View className="flex-1 px-6">
@@ -65,7 +70,7 @@ export default function OnboardingScreen() {
         <TouchableOpacity
           className="btn-primary flex-row gap-3 mb-8"
           activeOpacity={0.85}
-          onPress={() => router.push("/(auth)/sign-up")}
+          onPress={() => router.replace("/(auth)/sign-up")}
         >
           <Text className="btn-primary-label">Get Started</Text>
           <Text className="font-poppins-bold text-[22px] text-white leading-6">›</Text>
