@@ -7,7 +7,7 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TAB_COUNT = 5;
@@ -34,7 +34,10 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const activeIndex = state.index;
 
   const tabWidth = width / TAB_COUNT;
-  const circleLeft = (index: number) => index * tabWidth + (tabWidth - CIRCLE_SIZE) / 2;
+  const circleLeft = useCallback(
+    (index: number) => index * tabWidth + (tabWidth - CIRCLE_SIZE) / 2,
+    [tabWidth]
+  );
 
   const translateX = useSharedValue(circleLeft(activeIndex));
 
@@ -43,7 +46,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
       duration: 250,
       easing: Easing.out(Easing.ease),
     });
-  }, [activeIndex, tabWidth]);
+  }, [activeIndex, tabWidth, circleLeft, translateX]);
 
   const animatedCircleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
