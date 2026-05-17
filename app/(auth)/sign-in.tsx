@@ -7,7 +7,6 @@ import {
   Platform,
   ScrollView,
   Image,
-  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSignIn, useSSO } from "@clerk/expo";
@@ -82,7 +81,7 @@ export default function SignInScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -122,8 +121,8 @@ export default function SignInScreen() {
 
             {/* Form */}
             <View className="mt-5">
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Email</Text>
+              <View className="border border-border rounded-xl px-4 pt-[10px] pb-3">
+                <Text className="caption mb-1">Email</Text>
                 <TextInput
                   value={email}
                   onChangeText={setEmail}
@@ -133,7 +132,7 @@ export default function SignInScreen() {
                   autoCapitalize="none"
                   autoCorrect={false}
                   underlineColorAndroid="transparent"
-                  style={styles.input}
+                  className="font-poppins text-sm text-text-primary p-0"
                 />
               </View>
               {errors?.fields?.identifier && (
@@ -188,12 +187,12 @@ export default function SignInScreen() {
 
             {/* Footer */}
             <View className="flex-row items-center justify-center mt-8">
-              <Text style={styles.footerText}>Don't have an account? </Text>
+              <Text className="body-sm">Don't have an account? </Text>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => router.replace("/(auth)/sign-up")}
               >
-                <Text style={styles.footerLink}>Sign Up</Text>
+                <Text className="font-poppins-semibold text-[13px] text-lingua-purple">Sign Up</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -226,60 +225,13 @@ function SocialButton({
   onPress?: () => void;
 }) {
   return (
-    <TouchableOpacity activeOpacity={0.85} style={styles.socialBtn} onPress={onPress}>
+    <TouchableOpacity
+      activeOpacity={0.85}
+      className="flex-row items-center border border-border rounded-xl py-[14px] px-4 bg-white"
+      onPress={onPress}
+    >
       {iconElement ?? <Ionicons name={icon!} size={20} color={iconColor} />}
-      <Text style={styles.socialLabel}>{label}</Text>
+      <Text className="font-poppins-medium text-sm text-text-primary flex-1 text-center">{label}</Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#fff" },
-  inputWrap: {
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 12,
-  },
-  label: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 11,
-    color: "#6b7280",
-    marginBottom: 4,
-  },
-  input: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 14,
-    color: "#001328",
-    padding: 0,
-  },
-  socialBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    backgroundColor: "#fff",
-  },
-  socialLabel: {
-    fontFamily: "Poppins-Medium",
-    fontSize: 14,
-    color: "#001328",
-    flex: 1,
-    textAlign: "center",
-  },
-  footerText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 13,
-    color: "#6b7280",
-  },
-  footerLink: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 13,
-    color: "#6c4ef5",
-  },
-});

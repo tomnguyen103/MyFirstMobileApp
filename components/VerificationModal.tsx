@@ -7,7 +7,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   TouchableOpacity,
-  StyleSheet,
 } from "react-native";
 import { useRef, useState, useEffect } from "react";
 
@@ -63,27 +62,27 @@ export default function VerificationModal({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
+      <View className="flex-1 bg-black/50 justify-end">
         <TouchableWithoutFeedback onPress={onClose}>
-          <View style={StyleSheet.absoluteFillObject} />
+          <View className="absolute inset-0" />
         </TouchableWithoutFeedback>
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.avoidingView}
+          className="w-full"
         >
-          <View style={styles.sheet}>
+          <View className="bg-white rounded-t-[28px] px-6 pt-4 pb-11">
             {/* Drag handle */}
             <View className="w-10 h-1 bg-border rounded-full self-center mb-6" />
 
             <Text className="h3 text-center">Check your email</Text>
             <Text className="body-md text-text-secondary text-center mt-2 mb-8">
               {"We sent a 6-digit code to\n"}
-              <Text style={styles.emailHighlight}>{maskedEmail}</Text>
+              <Text className="font-poppins-semibold text-text-primary">{maskedEmail}</Text>
             </Text>
 
             {/* OTP input — 6 boxes with a hidden overlay TextInput */}
-            <View style={styles.otpContainer}>
+            <View className="relative">
               <View className="flex-row justify-center gap-3">
                 {Array.from({ length: 6 }).map((_, i) => {
                   const filled = i < code.length;
@@ -91,13 +90,15 @@ export default function VerificationModal({
                   return (
                     <View
                       key={i}
-                      style={[
-                        styles.otpBox,
-                        filled && styles.otpBoxFilled,
-                        active && styles.otpBoxActive,
-                      ]}
+                      className={`w-12 h-14 rounded-md border-2 items-center justify-center ${
+                        filled
+                          ? "border-lingua-purple bg-[#f0ecfe]"
+                          : active
+                          ? "border-lingua-purple bg-white"
+                          : "border-border bg-surface"
+                      }`}
                     >
-                      <Text style={styles.otpDigit}>{code[i] ?? ""}</Text>
+                      <Text className="font-poppins-bold text-[22px] text-text-primary">{code[i] ?? ""}</Text>
                     </View>
                   );
                 })}
@@ -110,7 +111,7 @@ export default function VerificationModal({
                 maxLength={6}
                 caretHidden
                 editable={!isVerifying}
-                style={[StyleSheet.absoluteFillObject, { opacity: 0 }]}
+                className="absolute inset-0 opacity-0"
               />
             </View>
 
@@ -126,9 +127,9 @@ export default function VerificationModal({
               onPress={onResend}
               disabled={isVerifying}
             >
-              <Text style={styles.resendText}>
+              <Text className="body-sm text-center">
                 Didn&apos;t receive it?{" "}
-                <Text style={styles.resendLink}>Resend code</Text>
+                <Text className="font-poppins-semibold text-lingua-purple">Resend code</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -137,62 +138,3 @@ export default function VerificationModal({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
-  },
-  avoidingView: {
-    width: "100%",
-  },
-  sheet: {
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 44,
-  },
-  emailHighlight: {
-    fontFamily: "Poppins-SemiBold",
-    color: "#001328",
-  },
-  otpContainer: {
-    position: "relative",
-  },
-  otpBox: {
-    width: 48,
-    height: 56,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#e5e7eb",
-    backgroundColor: "#f6f7fb",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  otpBoxFilled: {
-    borderColor: "#6c4ef5",
-    backgroundColor: "#f0ecfe",
-  },
-  otpBoxActive: {
-    borderColor: "#6c4ef5",
-    backgroundColor: "#fff",
-  },
-  otpDigit: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 22,
-    color: "#001328",
-  },
-  resendText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 13,
-    color: "#6b7280",
-    textAlign: "center",
-  },
-  resendLink: {
-    fontFamily: "Poppins-SemiBold",
-    color: "#6c4ef5",
-  },
-});

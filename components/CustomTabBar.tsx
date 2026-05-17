@@ -50,8 +50,18 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   }));
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-      <View style={styles.inner}>
+    <View
+      className="bg-white"
+      style={{
+        paddingBottom: insets.bottom,
+        shadowColor: "#000000",
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 12,
+        elevation: 10,
+      }}
+    >
+      <View className="flex-row h-[68px] items-center relative">
         {/* Sliding active circle */}
         <Animated.View style={[styles.circle, animatedCircleStyle]} />
 
@@ -63,7 +73,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           return (
             <TouchableOpacity
               key={route.key}
-              style={styles.tab}
+              className="flex-1 items-center justify-center h-full"
               onPress={() => navigation.navigate(route.name as never)}
               activeOpacity={0.8}
             >
@@ -73,7 +83,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                 color={isActive ? "#ffffff" : "#9ca3af"}
               />
               {!isActive && (
-                <Text style={styles.label} numberOfLines={1}>
+                <Text className="font-poppins text-[10px] text-[#9ca3af] mt-[3px]" numberOfLines={1}>
                   {tab.label}
                 </Text>
               )}
@@ -86,20 +96,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#ffffff",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 10,
-  },
-  inner: {
-    flexDirection: "row",
-    height: TAB_HEIGHT,
-    alignItems: "center",
-    position: "relative",
-  },
+  // Animated.View from reanimated — keep in StyleSheet to avoid conflicts with useAnimatedStyle
   circle: {
     position: "absolute",
     width: CIRCLE_SIZE,
@@ -107,17 +104,5 @@ const styles = StyleSheet.create({
     borderRadius: CIRCLE_SIZE / 2,
     backgroundColor: "#6c4ef5",
     top: (TAB_HEIGHT - CIRCLE_SIZE) / 2,
-  },
-  tab: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
-  },
-  label: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 10,
-    color: "#9ca3af",
-    marginTop: 3,
   },
 });

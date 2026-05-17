@@ -10,7 +10,7 @@ export default function OnboardingScreen() {
   if (!isLoaded) return null;
   if (isSignedIn) return <Redirect href="/" />;
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 px-6">
         {/* Header — left aligned */}
         <View className="flex-row items-center justify-center gap-2 pt-2">
@@ -81,10 +81,6 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
   // Platform-specific shadow syntax differs between iOS/Android — must stay in StyleSheet
   shadow: {
     shadowColor: "#000",
