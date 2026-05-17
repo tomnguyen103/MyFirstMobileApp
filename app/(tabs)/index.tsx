@@ -4,7 +4,6 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@clerk/expo";
@@ -55,26 +54,28 @@ function PlanRow({
   const cfg = getPlanIconConfig(item.type);
   return (
     <>
-      <View style={styles.planRow}>
-        <View style={[styles.planIconBox, { backgroundColor: cfg.bg }]}>
+      <View className="flex-row items-center px-4 py-[15px] gap-3">
+        <View
+          className="w-11 h-11 rounded-[13px] items-center justify-center"
+          style={{ backgroundColor: cfg.bg }}
+        >
           <Ionicons name={cfg.name} size={20} color={cfg.color} />
         </View>
-        <View style={styles.planTextBlock}>
-          <Text style={styles.planTitle}>{item.title}</Text>
-          <Text style={styles.planSubtitle}>{item.subtitle}</Text>
+        <View className="flex-1">
+          <Text className="font-poppins-semibold text-[15px] text-text-primary leading-[21px]">{item.title}</Text>
+          <Text className="body-sm mt-[1px]">{item.subtitle}</Text>
         </View>
         <View
-          style={[
-            styles.statusCircle,
-            item.completed && styles.statusCircleDone,
-          ]}
+          className={`w-[26px] h-[26px] rounded-full border-2 items-center justify-center ${
+            item.completed ? "bg-lingua-blue border-lingua-blue" : "border-border"
+          }`}
         >
           {item.completed && (
             <Ionicons name="checkmark" size={14} color="#ffffff" />
           )}
         </View>
       </View>
-      {showDivider && <View style={styles.planDivider} />}
+      {showDivider && <View className="h-px bg-[#f0f0f5] ml-[72px]" />}
     </>
   );
 }
@@ -100,28 +101,28 @@ export default function HomeScreen() {
   const goalProgress = CURRENT_XP / DAILY_GOAL_XP;
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
       {/* ── Header ─────────────────────────────────────────── */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
+      <View className="flex-row items-center justify-between px-5 py-[14px] bg-white border-b border-border">
+        <View className="flex-row items-center gap-[10px]">
           <Image
             source={{ uri: selectedLanguage.flag }}
-            style={styles.flagCircle}
+            className="w-8 h-8 rounded-full"
           />
-          <Text style={styles.greeting}>
+          <Text className="font-poppins-semibold text-base text-text-primary">
             {greeting}, {firstName}! 👋
           </Text>
         </View>
-        <View style={styles.headerRight}>
-          <View style={styles.streakRow}>
+        <View className="flex-row items-center gap-[14px]">
+          <View className="flex-row items-center gap-1">
             <Image
               source={images.streakFire}
-              style={styles.fireIcon}
+              className="w-5 h-5"
               resizeMode="contain"
             />
-            <Text style={styles.streakCount}>{STREAK_COUNT}</Text>
+            <Text className="font-poppins-semibold text-[15px] text-text-primary">{STREAK_COUNT}</Text>
           </View>
-          <TouchableOpacity style={styles.bellBtn} activeOpacity={0.7}>
+          <TouchableOpacity className="w-9 h-9 items-center justify-center" activeOpacity={0.7}>
             <Ionicons name="notifications-outline" size={22} color="#001328" />
           </TouchableOpacity>
         </View>
@@ -129,71 +130,87 @@ export default function HomeScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{ paddingTop: 20, paddingBottom: 110, gap: 16 }}
       >
         {/* ── Daily Goal Card ─────────────────────────────── */}
-        <View style={styles.goalCard}>
-          <View style={styles.goalLeft}>
-            <Text style={styles.goalLabel}>Daily goal</Text>
-            <View style={styles.goalXpRow}>
-              <Text style={styles.goalXpCurrent}>{CURRENT_XP}</Text>
-              <Text style={styles.goalXpTotal}> / {DAILY_GOAL_XP} XP</Text>
+        <View className="flex-row items-center bg-[#FEF9EC] rounded-xl pt-5 pb-5 pl-5 pr-[10px] mx-5">
+          <View className="flex-1 pr-3">
+            <Text className="body-sm mb-1">Daily goal</Text>
+            <View className="flex-row items-baseline mb-3">
+              <Text className="font-poppins-bold text-[28px] text-text-primary leading-[34px]">{CURRENT_XP}</Text>
+              <Text className="font-poppins text-[15px] text-text-secondary"> / {DAILY_GOAL_XP} XP</Text>
             </View>
-            <View style={styles.goalTrack}>
+            <View className="h-2 bg-[#FFD9A0] rounded-xs overflow-hidden">
               <View
-                style={[
-                  styles.goalFill,
-                  { width: `${Math.round(goalProgress * 100)}%` },
-                ]}
+                className="h-full bg-[#FF8A00] rounded-xs"
+                style={{ width: `${Math.round(goalProgress * 100)}%` }}
               />
             </View>
           </View>
           <Image
             source={images.treasure}
-            style={styles.treasureImg}
+            className="w-[76px] h-[76px]"
             resizeMode="contain"
           />
         </View>
 
         {/* ── Continue Learning Card ──────────────────────── */}
         {currentLesson && (
-          <View style={styles.continueCard}>
-            <View style={styles.continueContent}>
-              <Text style={styles.continueMeta}>Continue learning</Text>
-              <Text style={styles.continueLanguage}>
+          <View
+            className="flex-row h-[180px] bg-lingua-purple rounded-[24px] mx-5 overflow-hidden"
+            style={{
+              shadowColor: "#6c4ef5",
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.35,
+              shadowRadius: 16,
+              elevation: 8,
+            }}
+          >
+            <View className="flex-1 py-[22px] pl-[22px] pr-[10px] justify-center">
+              <Text className="font-poppins text-[12px] text-white/75 mb-0.5">Continue learning</Text>
+              <Text className="font-poppins-bold text-2xl text-white leading-[30px]">
                 {selectedLanguage.name}
               </Text>
-              <Text style={styles.continueUnit}>
+              <Text className="font-poppins text-[13px] text-white/75 mt-0.5">
                 {"A1 · "}
                 {languageUnit?.title ?? "Unit 1"}
               </Text>
               <TouchableOpacity
-                style={styles.continueBtn}
+                className="bg-white rounded-full px-[22px] py-[10px] self-start mt-4"
                 activeOpacity={0.85}
                 onPress={() =>
                   router.push(`/lesson/${currentLesson.id}` as never)
                 }
               >
-                <Text style={styles.continueBtnLabel}>Continue</Text>
+                <Text className="font-poppins-semibold text-sm text-lingua-purple">Continue</Text>
               </TouchableOpacity>
             </View>
             <Image
               source={images.palace}
-              style={styles.palaceImg}
+              className="w-[140px] h-[180px]"
               resizeMode="contain"
             />
           </View>
         )}
 
         {/* ── Today's Plan ────────────────────────────────── */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>{"Today's plan"}</Text>
+        <View className="px-5">
+          <View className="flex-row items-center justify-between mb-[14px]">
+            <Text className="font-poppins-semibold text-[17px] text-text-primary">{"Today's plan"}</Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.viewAll}>View all</Text>
+              <Text className="font-poppins-medium text-[13px] text-lingua-purple">View all</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.planCard}>
+          <View
+            className="bg-white rounded-[18px] overflow-hidden"
+            style={{
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.06,
+              shadowRadius: 10,
+              elevation: 2,
+            }}
+          >
             {todaysPlan.map((item, idx) => (
               <PlanRow
                 key={item.id}
@@ -208,262 +225,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: "#f6f7fb",
-  },
-
-  // ── Header ──────────────────────────────────────────────
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    backgroundColor: "#ffffff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-  },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  flagCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-  },
-  greeting: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 16,
-    color: "#001328",
-  },
-  headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  streakRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  fireIcon: {
-    width: 20,
-    height: 20,
-  },
-  streakCount: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 15,
-    color: "#001328",
-  },
-  bellBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // ── Scroll ──────────────────────────────────────────────
-  scrollContent: {
-    paddingTop: 20,
-    paddingBottom: 110,
-    gap: 16,
-  },
-
-  // ── Daily Goal Card ─────────────────────────────────────
-  goalCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FEF9EC",
-    borderRadius: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingLeft: 20,
-    paddingRight: 10,
-    marginHorizontal: 20,
-  },
-  goalLeft: {
-    flex: 1,
-    paddingRight: 12,
-  },
-  goalLabel: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 13,
-    color: "#6b7280",
-    marginBottom: 4,
-  },
-  goalXpRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    marginBottom: 12,
-  },
-  goalXpCurrent: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 28,
-    color: "#001328",
-    lineHeight: 34,
-  },
-  goalXpTotal: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 15,
-    color: "#6b7280",
-  },
-  goalTrack: {
-    height: 8,
-    backgroundColor: "#FFD9A0",
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  goalFill: {
-    height: "100%",
-    backgroundColor: "#FF8A00",
-    borderRadius: 4,
-  },
-  treasureImg: {
-    width: 76,
-    height: 76,
-  },
-
-  // ── Continue Learning Card ──────────────────────────────
-  continueCard: {
-    flexDirection: "row",
-    height: 180,
-    backgroundColor: "#6c4ef5",
-    borderRadius: 24,
-    marginHorizontal: 20,
-    overflow: "hidden",
-    shadowColor: "#6c4ef5",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  continueContent: {
-    flex: 1,
-    paddingTop: 22,
-    paddingBottom: 22,
-    paddingLeft: 22,
-    paddingRight: 10,
-    justifyContent: "center",
-  },
-  continueMeta: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 12,
-    color: "rgba(255,255,255,0.75)",
-    marginBottom: 2,
-  },
-  continueLanguage: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 24,
-    color: "#ffffff",
-    lineHeight: 30,
-  },
-  continueUnit: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 13,
-    color: "rgba(255,255,255,0.75)",
-    marginTop: 2,
-  },
-  continueBtn: {
-    backgroundColor: "#ffffff",
-    borderRadius: 999,
-    paddingHorizontal: 22,
-    paddingVertical: 10,
-    alignSelf: "flex-start",
-    marginTop: 16,
-  },
-  continueBtnLabel: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 14,
-    color: "#6c4ef5",
-  },
-  palaceImg: {
-    width: 140,
-    height: 180,
-  },
-
-  // ── Section ─────────────────────────────────────────────
-  section: {
-    paddingHorizontal: 20,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 17,
-    color: "#001328",
-  },
-  viewAll: {
-    fontFamily: "Poppins-Medium",
-    fontSize: 13,
-    color: "#6c4ef5",
-  },
-
-  // ── Plan Card (container for all rows) ──────────────────
-  planCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 18,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 2,
-  },
-  planRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 15,
-    gap: 12,
-  },
-  planIconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 13,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  planTextBlock: {
-    flex: 1,
-  },
-  planTitle: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 15,
-    color: "#001328",
-    lineHeight: 21,
-  },
-  planSubtitle: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 13,
-    color: "#6b7280",
-    marginTop: 1,
-  },
-  statusCircle: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 2,
-    borderColor: "#e5e7eb",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  statusCircleDone: {
-    backgroundColor: "#4d88ff",
-    borderColor: "#4d88ff",
-  },
-  planDivider: {
-    height: 1,
-    backgroundColor: "#f0f0f5",
-    marginLeft: 72,
-  },
-
-});

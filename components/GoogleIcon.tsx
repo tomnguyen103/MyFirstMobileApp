@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 
 interface Props {
   size?: number;
@@ -25,50 +25,54 @@ export default function GoogleIcon({ size = 20 }: Props) {
   return (
     <View style={{ width: size, height: size }}>
       {/* ── Red  (top-left) ── */}
-      <View style={[st.q, { top: 0, left: 0, width: half, height: half }]}>
+      <View className="absolute overflow-hidden" style={{ top: 0, left: 0, width: half, height: half }}>
         <View
-          style={[st.c, {
+          className="absolute"
+          style={{
             width: size, height: size,
             borderRadius: half,
             backgroundColor: "#EA4335",
             top: 0, left: 0,
-          }]}
+          }}
         />
       </View>
 
       {/* ── Blue  (top-right) ── */}
-      <View style={[st.q, { top: 0, right: 0, width: half, height: half }]}>
+      <View className="absolute overflow-hidden" style={{ top: 0, right: 0, width: half, height: half }}>
         <View
-          style={[st.c, {
+          className="absolute"
+          style={{
             width: size, height: size,
             borderRadius: half,
             backgroundColor: "#4285F4",
             top: 0, right: 0,
-          }]}
+          }}
         />
       </View>
 
       {/* ── Yellow  (bottom-left) ── */}
-      <View style={[st.q, { bottom: 0, left: 0, width: half, height: half }]}>
+      <View className="absolute overflow-hidden" style={{ bottom: 0, left: 0, width: half, height: half }}>
         <View
-          style={[st.c, {
+          className="absolute"
+          style={{
             width: size, height: size,
             borderRadius: half,
             backgroundColor: "#FBBC05",
             bottom: 0, left: 0,
-          }]}
+          }}
         />
       </View>
 
       {/* ── Green  (bottom-right) ── */}
-      <View style={[st.q, { bottom: 0, right: 0, width: half, height: half }]}>
+      <View className="absolute overflow-hidden" style={{ bottom: 0, right: 0, width: half, height: half }}>
         <View
-          style={[st.c, {
+          className="absolute"
+          style={{
             width: size, height: size,
             borderRadius: half,
             backgroundColor: "#34A853",
             bottom: 0, right: 0,
-          }]}
+          }}
         />
       </View>
 
@@ -111,8 +115,3 @@ export default function GoogleIcon({ size = 20 }: Props) {
     </View>
   );
 }
-
-const st = StyleSheet.create({
-  q: { position: "absolute", overflow: "hidden" },
-  c: { position: "absolute" },
-});

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
-  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -38,11 +37,13 @@ export default function LanguageSelectionScreen() {
       <TouchableOpacity
         onPress={() => setSelectedId(item.id)}
         activeOpacity={0.7}
-        style={[styles.langItem, isSelected && styles.langItemSelected]}
+        className={`flex-row items-center px-6 py-[14px] mx-2 rounded-xl border-[1.5px] ${
+          isSelected ? "bg-[#ede8ff] border-lingua-purple" : "bg-white border-transparent"
+        }`}
       >
         <Image
           source={{ uri: item.flag }}
-          style={styles.flag}
+          className="w-11 h-11 rounded-full"
         />
         <View className="flex-1 ml-3">
           <Text className="body-md font-poppins-semibold text-text-primary">
@@ -60,7 +61,7 @@ export default function LanguageSelectionScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView className="flex-1 bg-white">
       {/* Header */}
       <View className="flex-row items-center px-6 py-3">
         {selectedLanguageId ? (
@@ -68,27 +69,24 @@ export default function LanguageSelectionScreen() {
             <Ionicons name="chevron-back" size={24} color="#001328" />
           </TouchableOpacity>
         ) : (
-          <View style={styles.headerSpacer} />
+          <View className="w-6" />
         )}
-        <Text
-          className="font-poppins-semibold text-text-primary flex-1 text-center"
-          style={styles.title}
-        >
+        <Text className="font-poppins-semibold text-base text-text-primary flex-1 text-center">
           Choose a language
         </Text>
-        <View style={styles.headerSpacer} />
+        <View className="w-6" />
       </View>
 
       {/* Search bar */}
       <View className="px-6 pb-4">
-        <View style={styles.searchBar}>
+        <View className="flex-row items-center gap-2 bg-surface rounded-full px-4 py-3">
           <Ionicons name="search" size={18} color="#9ca3af" />
           <TextInput
             value={search}
             onChangeText={setSearch}
             placeholder="Search languages"
             placeholderTextColor="#9ca3af"
-            style={styles.searchInput}
+            className="flex-1 font-poppins text-sm text-text-primary py-0"
           />
         </View>
       </View>
@@ -99,26 +97,25 @@ export default function LanguageSelectionScreen() {
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
-          <Text style={styles.sectionLabel}>Popular</Text>
+          <Text className="font-poppins-semibold text-[13px] text-text-primary px-6 pb-2">Popular</Text>
         }
         renderItem={renderItem}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ItemSeparatorComponent={() => <View className="h-px bg-border ml-22 mr-2" />}
         ListFooterComponent={
-          <View style={styles.footer}>
+          <View className="mt-4">
             <TouchableOpacity
-              style={[
-                styles.confirmBtn,
-                !selectedId && styles.confirmBtnDisabled,
-              ]}
+              className={`mx-6 rounded-full items-center justify-center py-[14px] ${
+                !selectedId ? "bg-[#c4b8fa]" : "bg-lingua-purple"
+              }`}
               activeOpacity={0.85}
               onPress={handleConfirm}
               disabled={!selectedId}
             >
-              <Text style={styles.confirmBtnLabel}>Confirm</Text>
+              <Text className="font-poppins-bold text-base text-white">Confirm</Text>
             </TouchableOpacity>
             <Image
               source={images.earth}
-              style={styles.earthImage}
+              className="w-full h-[180px] mt-3"
               resizeMode="contain"
             />
           </View>
@@ -127,89 +124,3 @@ export default function LanguageSelectionScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-  title: {
-    fontSize: 16,
-  },
-  headerSpacer: {
-    width: 24,
-  },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    backgroundColor: "#f6f7fb",
-    borderRadius: 999,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  searchInput: {
-    flex: 1,
-    fontFamily: "Poppins-Regular",
-    fontSize: 14,
-    color: "#001328",
-    paddingVertical: 0,
-  },
-  sectionLabel: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 13,
-    color: "#001328",
-    paddingHorizontal: 24,
-    paddingBottom: 8,
-  },
-  langItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    marginHorizontal: 8,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: "transparent",
-    backgroundColor: "#ffffff",
-  },
-  langItemSelected: {
-    backgroundColor: "#ede8ff",
-    borderColor: "#6c4ef5",
-  },
-  flag: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#e5e7eb",
-    marginLeft: 24 + 8 + 44 + 12,
-    marginRight: 8,
-  },
-  footer: {
-    marginTop: 16,
-  },
-  confirmBtn: {
-    marginHorizontal: 24,
-    backgroundColor: "#6c4ef5",
-    borderRadius: 999,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 14,
-  },
-  confirmBtnDisabled: {
-    backgroundColor: "#c4b8fa",
-  },
-  confirmBtnLabel: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 16,
-    color: "#ffffff",
-  },
-  earthImage: {
-    width: "100%",
-    height: 180,
-    marginTop: 12,
-  },
-});
