@@ -12,16 +12,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth, useSignUp, useSSO } from "@clerk/expo";
 import { router } from "expo-router";
 import { useState } from "react";
+import { usePostHog } from "posthog-react-native";
 import { makeRedirectUri } from "expo-auth-session";
 import { Ionicons } from "@expo/vector-icons";
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
 import GoogleIcon from "@/components/GoogleIcon";
 
+const SSO_METHOD = {
+  oauth_google: "google",
+  oauth_facebook: "facebook",
+  oauth_apple: "apple",
+} as const;
+
 export default function SignUpScreen() {
   const { isSignedIn } = useAuth();
   const { signUp, errors, fetchStatus } = useSignUp();
   const { startSSOFlow } = useSSO();
+  const posthog = usePostHog();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,14 +43,18 @@ export default function SignUpScreen() {
   async function handleSignUp() {
     if (!email || !password) return;
 
+    posthog.capture("signup_attempted", { method: "email" });
+
     const { error } = await signUp.password({ emailAddress: email, password });
     if (error) {
+      posthog.capture("signup_failed", { method: "email", error: error.message });
       console.error(JSON.stringify(error, null, 2));
       return;
     }
 
     // Email verification required — send the code
     await signUp.verifications.sendEmailCode();
+    posthog.capture("signup_verification_shown");
     setModalVisible(true);
   }
 
@@ -52,6 +64,10 @@ export default function SignUpScreen() {
     await signUp.verifications.verifyEmailCode({ code });
 
     if (signUp.status === "complete") {
+      if (signUp.createdUserId) {
+        posthog.identify(signUp.createdUserId, { email });
+      }
+      posthog.capture("signup_completed", { method: "email" });
       await signUp.finalize({
         navigate: ({ session }) => {
           if (session?.currentTask) return;
@@ -60,15 +76,20 @@ export default function SignUpScreen() {
       });
       setModalVisible(false);
     } else {
+      posthog.capture("signup_verification_failed");
       setModalError("Incorrect code. Please try again.");
     }
   }
 
   async function handleResend() {
+    posthog.capture("signup_verification_resent");
     await signUp.verifications.sendEmailCode();
   }
 
   async function handleSSO(strategy: "oauth_google" | "oauth_facebook" | "oauth_apple") {
+    const method = SSO_METHOD[strategy];
+    posthog.capture("signup_attempted", { method });
+
     try {
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy,
@@ -76,9 +97,11 @@ export default function SignUpScreen() {
       });
       if (createdSessionId && setActive) {
         await setActive({ session: createdSessionId });
+        posthog.capture("signup_completed", { method });
         router.replace("/");
       }
     } catch (err) {
+      posthog.capture("signup_failed", { method, error: String(err) });
       console.error(err);
     }
   }

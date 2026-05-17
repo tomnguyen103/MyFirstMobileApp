@@ -2,10 +2,12 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@clerk/expo";
 import { Redirect, router } from "expo-router";
+import { usePostHog } from "posthog-react-native";
 import { images } from "@/constants/images";
 
 export default function OnboardingScreen() {
   const { isSignedIn, isLoaded } = useAuth();
+  const posthog = usePostHog();
 
   if (!isLoaded) return null;
   if (isSignedIn) return <Redirect href="/" />;
@@ -70,7 +72,10 @@ export default function OnboardingScreen() {
         <TouchableOpacity
           className="btn-primary flex-row gap-3 mb-8"
           activeOpacity={0.85}
-          onPress={() => router.replace("/(auth)/sign-up")}
+          onPress={() => {
+            posthog.capture("onboarding_get_started_tapped");
+            router.replace("/(auth)/sign-up");
+          }}
         >
           <Text className="btn-primary-label">Get Started</Text>
           <Text className="font-poppins-bold text-[22px] text-white leading-6">›</Text>
