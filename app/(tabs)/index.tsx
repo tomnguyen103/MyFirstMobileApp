@@ -9,18 +9,74 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
+import type React from "react";
 import { router } from "expo-router";
 import { useLanguageStore } from "@/store/languageStore";
 import { languages } from "@/data/languages";
 import { units } from "@/data/units";
 import { lessons } from "@/data/lessons";
+import { todaysPlan, PlanItem } from "@/data/todaysPlan";
 import { images } from "@/constants/images";
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 17) return "Good afternoon";
-  return "Good evening";
+const DAILY_GOAL_XP = 20;
+const CURRENT_XP = 15;
+const STREAK_COUNT = 12;
+
+const LANGUAGE_GREETINGS: Record<string, string> = {
+  es: "Hola",
+  fr: "Bonjour",
+  ja: "こんにちは",
+};
+
+type IconName = React.ComponentProps<typeof Ionicons>["name"];
+
+function getPlanIconConfig(type: string): {
+  name: IconName;
+  bg: string;
+  color: string;
+} {
+  switch (type) {
+    case "ai-conversation":
+      return { name: "headset", bg: "#EDE9FE", color: "#6c4ef5" };
+    case "new-words":
+      return { name: "chatbubble-ellipses", bg: "#FCE7F3", color: "#db2777" };
+    default:
+      return { name: "book", bg: "#EDE9FE", color: "#6c4ef5" };
+  }
+}
+
+function PlanRow({
+  item,
+  showDivider,
+}: {
+  item: PlanItem;
+  showDivider: boolean;
+}) {
+  const cfg = getPlanIconConfig(item.type);
+  return (
+    <>
+      <View style={styles.planRow}>
+        <View style={[styles.planIconBox, { backgroundColor: cfg.bg }]}>
+          <Ionicons name={cfg.name} size={20} color={cfg.color} />
+        </View>
+        <View style={styles.planTextBlock}>
+          <Text style={styles.planTitle}>{item.title}</Text>
+          <Text style={styles.planSubtitle}>{item.subtitle}</Text>
+        </View>
+        <View
+          style={[
+            styles.statusCircle,
+            item.completed && styles.statusCircleDone,
+          ]}
+        >
+          {item.completed && (
+            <Ionicons name="checkmark" size={14} color="#ffffff" />
+          )}
+        </View>
+      </View>
+      {showDivider && <View style={styles.planDivider} />}
+    </>
+  );
 }
 
 export default function HomeScreen() {
@@ -29,188 +85,125 @@ export default function HomeScreen() {
 
   const selectedLanguage =
     languages.find((l) => l.id === selectedLanguageId) ?? languages[0];
-
-  const languageUnits = units.filter(
-    (u) => u.languageId === selectedLanguage.id
-  );
-  const currentUnit = languageUnits[0];
-  const unitLessons = currentUnit
-    ? lessons.filter((l) => l.unitId === currentUnit.id)
-    : [];
-  const currentLesson = unitLessons[0];
+  const languageUnit = units.find((u) => u.languageId === selectedLanguage.id);
+  const currentLesson = languageUnit
+    ? lessons.find((l) => l.unitId === languageUnit.id)
+    : null;
 
   const firstName =
-    user?.firstName ?? user?.username ?? user?.emailAddresses?.[0]?.emailAddress?.split("@")[0] ?? "Learner";
+    user?.firstName ??
+    user?.username ??
+    user?.emailAddresses?.[0]?.emailAddress?.split("@")[0] ??
+    "Learner";
+
+  const greeting = LANGUAGE_GREETINGS[selectedLanguage.id] ?? "Hello";
+  const goalProgress = CURRENT_XP / DAILY_GOAL_XP;
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      {/* ── Header ───────────────────────────────────────── */}
+      {/* ── Header ─────────────────────────────────────────── */}
       <View style={styles.header}>
-        <Image
-          source={images.mascotLogo}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <View style={styles.statsRow}>
-          {/* Streak */}
-          <View style={styles.statChip}>
+        <View style={styles.headerLeft}>
+          <Image
+            source={{ uri: selectedLanguage.flag }}
+            style={styles.flagCircle}
+          />
+          <Text style={styles.greeting}>
+            {greeting}, {firstName}! 👋
+          </Text>
+        </View>
+        <View style={styles.headerRight}>
+          <View style={styles.streakRow}>
             <Image
               source={images.streakFire}
-              style={styles.statIcon}
+              style={styles.fireIcon}
               resizeMode="contain"
             />
-            <Text style={styles.statValue}>0</Text>
+            <Text style={styles.streakCount}>{STREAK_COUNT}</Text>
           </View>
-          {/* XP */}
-          <View style={styles.statChip}>
-            <Ionicons name="star" size={16} color="#ffcb00" />
-            <Text style={styles.statValue}>0</Text>
-          </View>
+          <TouchableOpacity style={styles.bellBtn} activeOpacity={0.7}>
+            <Ionicons name="notifications-outline" size={22} color="#001328" />
+          </TouchableOpacity>
         </View>
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={styles.scrollContent}
       >
-        {/* ── Greeting ─────────────────────────────────────── */}
-        <View className="px-6 pt-5 pb-2 bg-background">
-          <Text className="h3">{getGreeting()}, {firstName}!</Text>
-          <View className="flex-row items-center gap-2 mt-1">
-            <Image
-              source={{ uri: selectedLanguage.flag }}
-              style={styles.flagSmall}
-            />
-            <Text className="body-md text-text-secondary">
-              Learning {selectedLanguage.name}
-            </Text>
+        {/* ── Daily Goal Card ─────────────────────────────── */}
+        <View style={styles.goalCard}>
+          <View style={styles.goalLeft}>
+            <Text style={styles.goalLabel}>Daily goal</Text>
+            <View style={styles.goalXpRow}>
+              <Text style={styles.goalXpCurrent}>{CURRENT_XP}</Text>
+              <Text style={styles.goalXpTotal}> / {DAILY_GOAL_XP} XP</Text>
+            </View>
+            <View style={styles.goalTrack}>
+              <View
+                style={[
+                  styles.goalFill,
+                  { width: `${Math.round(goalProgress * 100)}%` },
+                ]}
+              />
+            </View>
           </View>
+          <Image
+            source={images.treasure}
+            style={styles.treasureImg}
+            resizeMode="contain"
+          />
         </View>
 
-        {/* ── Continue Learning Card ────────────────────────── */}
+        {/* ── Continue Learning Card ──────────────────────── */}
         {currentLesson && (
-          <View className="px-6 mt-4">
-            <View style={styles.continueCard}>
-              {/* Top row: text + mascot */}
-              <View className="flex-row items-start justify-between">
-                <View className="flex-1 pr-3">
-                  <Text style={styles.continueLabel}>CONTINUE</Text>
-                  <Text style={styles.lessonTitle}>{currentLesson.title}</Text>
-                  <Text style={styles.lessonDesc} numberOfLines={2}>
-                    {currentLesson.description}
-                  </Text>
-                </View>
-                <Image
-                  source={images.mascotLogo}
-                  style={styles.cardMascot}
-                  resizeMode="contain"
-                />
-              </View>
-
-              {/* Progress bar */}
-              <View className="mt-4">
-                <View className="flex-row justify-between mb-1.5">
-                  <Text style={styles.progressMeta}>
-                    {currentUnit?.title ?? "Unit 1"}
-                  </Text>
-                  <Text style={styles.progressMeta}>
-                    0 / {currentUnit?.lessonIds.length ?? 2} lessons
-                  </Text>
-                </View>
-                <View style={styles.progressTrack}>
-                  <View style={[styles.progressFill, { width: "0%" }]} />
-                </View>
-              </View>
-
-              {/* Button */}
+          <View style={styles.continueCard}>
+            <View style={styles.continueContent}>
+              <Text style={styles.continueMeta}>Continue learning</Text>
+              <Text style={styles.continueLanguage}>
+                {selectedLanguage.name}
+              </Text>
+              <Text style={styles.continueUnit}>
+                {"A1 · "}
+                {languageUnit?.title ?? "Unit 1"}
+              </Text>
               <TouchableOpacity
                 style={styles.continueBtn}
                 activeOpacity={0.85}
-                onPress={() => router.push(`/lesson/${currentLesson.id}` as never)}
+                onPress={() =>
+                  router.push(`/lesson/${currentLesson.id}` as never)
+                }
               >
-                <Text style={styles.continueBtnLabel}>Continue Lesson</Text>
-                <Ionicons name="arrow-forward" size={16} color="#6c4ef5" />
+                <Text style={styles.continueBtnLabel}>Continue</Text>
               </TouchableOpacity>
             </View>
+            <Image
+              source={images.palace}
+              style={styles.palaceImg}
+              resizeMode="contain"
+            />
           </View>
         )}
 
-        {/* ── Today's Plan ──────────────────────────────────── */}
-        <View className="px-6 mt-6">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="h4">{"Today's Plan"}</Text>
-            <Text className="body-sm text-lingua-purple">See all</Text>
-          </View>
-
-          {unitLessons.map((lesson, index) => (
-            <TouchableOpacity
-              key={lesson.id}
-              style={styles.lessonCard}
-              activeOpacity={0.85}
-              onPress={() => router.push(`/lesson/${lesson.id}` as never)}
-            >
-              {/* Icon */}
-              <View style={styles.lessonIconWrap}>
-                <Ionicons
-                  name={index === 0 ? "book" : "mic"}
-                  size={20}
-                  color="#6c4ef5"
-                />
-              </View>
-
-              {/* Text */}
-              <View className="flex-1 ml-3">
-                <Text className="h4">{lesson.title}</Text>
-                <Text className="body-sm" numberOfLines={1}>
-                  {lesson.description}
-                </Text>
-              </View>
-
-              {/* XP + arrow */}
-              <View className="items-end gap-1.5">
-                <View style={styles.xpBadge}>
-                  <Text style={styles.xpLabel}>+{lesson.xpReward} XP</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={16} color="#9ca3af" />
-              </View>
+        {/* ── Today's Plan ────────────────────────────────── */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>{"Today's plan"}</Text>
+            <TouchableOpacity activeOpacity={0.7}>
+              <Text style={styles.viewAll}>View all</Text>
             </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* ── Your Progress ─────────────────────────────────── */}
-        <View className="px-6 mt-6">
-          <Text className="h4 mb-3">Your Progress</Text>
-          <View style={styles.progressCard}>
-            <View className="flex-row items-center gap-3">
-              <Image
-                source={{ uri: selectedLanguage.flag }}
-                style={styles.flagLarge}
+          </View>
+          <View style={styles.planCard}>
+            {todaysPlan.map((item, idx) => (
+              <PlanRow
+                key={item.id}
+                item={item}
+                showDivider={idx < todaysPlan.length - 1}
               />
-              <View className="flex-1">
-                <Text className="h4">{selectedLanguage.name}</Text>
-                <Text className="body-sm">{selectedLanguage.nativeName}</Text>
-              </View>
-              <View className="items-end">
-                <Text style={styles.progressPct}>0%</Text>
-                <Text className="caption text-text-secondary">complete</Text>
-              </View>
-            </View>
-
-            {/* Overall progress bar */}
-            <View style={styles.progressTrackLight}>
-              <View style={[styles.progressFillPurple, { width: "0%" }]} />
-            </View>
-
-            <View className="flex-row justify-between mt-2">
-              <Text className="caption text-text-secondary">
-                0 / {currentUnit?.lessonIds.length ?? 2} lessons done
-              </Text>
-              <Text className="caption text-text-secondary">
-                {selectedLanguage.learners}
-              </Text>
-            </View>
+            ))}
           </View>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -221,180 +214,256 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f6f7fb",
   },
-  /* Header */
+
+  // ── Header ──────────────────────────────────────────────
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
   },
-  logo: {
-    width: 36,
-    height: 36,
-  },
-  statsRow: {
+  headerLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 10,
   },
-  statChip: {
+  flagCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  greeting: {
+    fontFamily: "Poppins-SemiBold",
+    fontSize: 16,
+    color: "#001328",
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  streakRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#f6f7fb",
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
   },
-  statIcon: {
-    width: 18,
-    height: 18,
+  fireIcon: {
+    width: 20,
+    height: 20,
   },
-  statValue: {
+  streakCount: {
     fontFamily: "Poppins-SemiBold",
-    fontSize: 13,
+    fontSize: 15,
     color: "#001328",
   },
-  /* Language flag (small) */
-  flagSmall: {
-    width: 22,
-    height: 16,
-    borderRadius: 3,
+  bellBtn: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  /* Continue Learning Card */
-  continueCard: {
-    backgroundColor: "#6c4ef5",
+
+  // ── Scroll ──────────────────────────────────────────────
+  scrollContent: {
+    paddingTop: 20,
+    paddingBottom: 110,
+    gap: 16,
+  },
+
+  // ── Daily Goal Card ─────────────────────────────────────
+  goalCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FEF9EC",
     borderRadius: 20,
-    padding: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingRight: 10,
+    marginHorizontal: 20,
+  },
+  goalLeft: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  goalLabel: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 13,
+    color: "#6b7280",
+    marginBottom: 4,
+  },
+  goalXpRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    marginBottom: 12,
+  },
+  goalXpCurrent: {
+    fontFamily: "Poppins-Bold",
+    fontSize: 28,
+    color: "#001328",
+    lineHeight: 34,
+  },
+  goalXpTotal: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 15,
+    color: "#6b7280",
+  },
+  goalTrack: {
+    height: 8,
+    backgroundColor: "#FFD9A0",
+    borderRadius: 4,
+    overflow: "hidden",
+  },
+  goalFill: {
+    height: "100%",
+    backgroundColor: "#FF8A00",
+    borderRadius: 4,
+  },
+  treasureImg: {
+    width: 76,
+    height: 76,
+  },
+
+  // ── Continue Learning Card ──────────────────────────────
+  continueCard: {
+    flexDirection: "row",
+    height: 180,
+    backgroundColor: "#6c4ef5",
+    borderRadius: 24,
+    marginHorizontal: 20,
+    overflow: "hidden",
     shadowColor: "#6c4ef5",
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.35,
     shadowRadius: 16,
     elevation: 8,
   },
-  continueLabel: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 10,
-    letterSpacing: 1.2,
-    color: "rgba(255,255,255,0.7)",
+  continueContent: {
+    flex: 1,
+    paddingTop: 22,
+    paddingBottom: 22,
+    paddingLeft: 22,
+    paddingRight: 10,
+    justifyContent: "center",
   },
-  lessonTitle: {
-    fontFamily: "Poppins-SemiBold",
-    fontSize: 20,
-    lineHeight: 26,
+  continueMeta: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 12,
+    color: "rgba(255,255,255,0.75)",
+    marginBottom: 2,
+  },
+  continueLanguage: {
+    fontFamily: "Poppins-Bold",
+    fontSize: 24,
     color: "#ffffff",
-    marginTop: 2,
+    lineHeight: 30,
   },
-  lessonDesc: {
+  continueUnit: {
     fontFamily: "Poppins-Regular",
     fontSize: 13,
-    lineHeight: 20,
     color: "rgba(255,255,255,0.75)",
-    marginTop: 4,
-  },
-  cardMascot: {
-    width: 60,
-    height: 60,
-  },
-  progressMeta: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 11,
-    color: "rgba(255,255,255,0.65)",
-  },
-  progressTrack: {
-    height: 6,
-    backgroundColor: "rgba(255,255,255,0.25)",
-    borderRadius: 3,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: "#ffffff",
-    borderRadius: 3,
+    marginTop: 2,
   },
   continueBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#ffffff",
-    borderRadius: 14,
-    paddingVertical: 13,
+    borderRadius: 999,
+    paddingHorizontal: 22,
+    paddingVertical: 10,
+    alignSelf: "flex-start",
     marginTop: 16,
-    gap: 6,
   },
   continueBtnLabel: {
     fontFamily: "Poppins-SemiBold",
     fontSize: 14,
     color: "#6c4ef5",
   },
-  /* Lesson Cards */
-  lessonCard: {
+  palaceImg: {
+    width: 140,
+    height: 180,
+  },
+
+  // ── Section ─────────────────────────────────────────────
+  section: {
+    paddingHorizontal: 20,
+  },
+  sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
+  sectionTitle: {
+    fontFamily: "Poppins-SemiBold",
+    fontSize: 17,
+    color: "#001328",
+  },
+  viewAll: {
+    fontFamily: "Poppins-Medium",
+    fontSize: 13,
+    color: "#6c4ef5",
+  },
+
+  // ── Plan Card (container for all rows) ──────────────────
+  planCard: {
     backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: 18,
+    overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
     elevation: 2,
   },
-  lessonIconWrap: {
+  planRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 15,
+    gap: 12,
+  },
+  planIconBox: {
     width: 44,
     height: 44,
-    borderRadius: 12,
-    backgroundColor: "#f0ecff",
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
   },
-  xpBadge: {
-    backgroundColor: "#fff8e1",
-    borderRadius: 20,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+  planTextBlock: {
+    flex: 1,
   },
-  xpLabel: {
+  planTitle: {
     fontFamily: "Poppins-SemiBold",
-    fontSize: 10,
-    color: "#f59e0b",
+    fontSize: 15,
+    color: "#001328",
+    lineHeight: 21,
   },
-  /* Progress Card */
-  progressCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+  planSubtitle: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 13,
+    color: "#6b7280",
+    marginTop: 1,
   },
-  flagLarge: {
-    width: 44,
-    height: 32,
-    borderRadius: 6,
+  statusCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 2,
+    borderColor: "#e5e7eb",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  progressPct: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 16,
-    color: "#6c4ef5",
+  statusCircleDone: {
+    backgroundColor: "#4d88ff",
+    borderColor: "#4d88ff",
   },
-  progressTrackLight: {
-    height: 6,
-    backgroundColor: "#f0ecff",
-    borderRadius: 3,
-    overflow: "hidden",
-    marginTop: 12,
+  planDivider: {
+    height: 1,
+    backgroundColor: "#f0f0f5",
+    marginLeft: 72,
   },
-  progressFillPurple: {
-    height: "100%",
-    backgroundColor: "#6c4ef5",
-    borderRadius: 3,
-  },
+
 });
