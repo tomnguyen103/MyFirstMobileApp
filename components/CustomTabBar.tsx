@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -10,10 +10,7 @@ import Animated, {
 import { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const { width } = Dimensions.get("window");
-
 const TAB_COUNT = 5;
-const TAB_WIDTH = width / TAB_COUNT;
 const CIRCLE_SIZE = 52;
 const TAB_HEIGHT = 68;
 
@@ -31,12 +28,13 @@ const TAB_CONFIG: TabConfig[] = [
   { label: "Profile", iconActive: "person", iconInactive: "person-outline" },
 ];
 
-const circleLeft = (index: number) =>
-  index * TAB_WIDTH + (TAB_WIDTH - CIRCLE_SIZE) / 2;
-
 export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
+  const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const activeIndex = state.index;
+
+  const tabWidth = width / TAB_COUNT;
+  const circleLeft = (index: number) => index * tabWidth + (tabWidth - CIRCLE_SIZE) / 2;
 
   const translateX = useSharedValue(circleLeft(activeIndex));
 
@@ -45,7 +43,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
       duration: 250,
       easing: Easing.out(Easing.ease),
     });
-  }, [activeIndex]);
+  }, [activeIndex, tabWidth]);
 
   const animatedCircleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
