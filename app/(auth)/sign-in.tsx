@@ -187,7 +187,7 @@ export default function SignInScreen() {
 
             {/* Footer */}
             <View className="flex-row items-center justify-center mt-8">
-              <Text className="body-sm">Don't have an account? </Text>
+              <Text className="body-sm">{"Don't have an account? "}</Text>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => router.replace("/(auth)/sign-up")}
