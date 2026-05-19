@@ -22,6 +22,7 @@ const LANGUAGE_GREETINGS: Record<string, string> = {
   es: "Hola",
   fr: "Bonjour",
   ja: "こんにちは",
+  vi: "Xin chào",
 };
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -51,7 +52,7 @@ function PlanRow({
   const cfg = getPlanIconConfig(item.type);
   return (
     <>
-      <View className="flex-row items-center px-4 py-[15px] gap-3">
+      <View className="flex-row items-center px-4 py-3.75 gap-3">
         <View
           className="w-11 h-11 rounded-[13px] items-center justify-center"
           style={{ backgroundColor: cfg.bg }}
@@ -59,11 +60,11 @@ function PlanRow({
           <Ionicons name={cfg.name} size={20} color={cfg.color} />
         </View>
         <View className="flex-1">
-          <Text className="font-poppins-semibold text-[15px] text-text-primary leading-[21px]">{item.title}</Text>
-          <Text className="body-sm mt-[1px]">{item.subtitle}</Text>
+          <Text className="font-poppins-semibold text-[15px] text-text-primary leading-5.25">{item.title}</Text>
+          <Text className="body-sm mt-px">{item.subtitle}</Text>
         </View>
         <View
-          className={`w-[26px] h-[26px] rounded-full border-2 items-center justify-center ${
+          className={`w-6.5 h-6.5 rounded-full border-2 items-center justify-center ${
             item.completed ? "bg-lingua-blue border-lingua-blue" : "border-border"
           }`}
         >
@@ -72,7 +73,7 @@ function PlanRow({
           )}
         </View>
       </View>
-      {showDivider && <View className="h-px bg-[#f0f0f5] ml-[72px]" />}
+      {showDivider && <View className="h-px bg-[#f0f0f5] ml-18" />}
     </>
   );
 }
@@ -100,8 +101,8 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       {/* ── Header ─────────────────────────────────────────── */}
-      <View className="flex-row items-center justify-between px-5 py-[14px] bg-white border-b border-border">
-        <View className="flex-row items-center gap-[10px]">
+      <View className="flex-row items-center justify-between px-5 py-3.5 bg-white border-b border-border">
+        <View className="flex-row items-center gap-2.5">
           <Image
             source={{ uri: selectedLanguage.flag }}
             className="w-8 h-8 rounded-full"
@@ -110,7 +111,7 @@ export default function HomeScreen() {
             {greeting}, {firstName}! 👋
           </Text>
         </View>
-        <View className="flex-row items-center gap-[14px]">
+        <View className="flex-row items-center gap-3.5">
           <View className="flex-row items-center gap-1">
             <Image
               source={images.streakFire}
@@ -130,11 +131,11 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingTop: 20, paddingBottom: 110, gap: 16 }}
       >
         {/* ── Daily Goal Card ─────────────────────────────── */}
-        <View className="flex-row items-center bg-[#FEF9EC] rounded-xl pt-5 pb-5 pl-5 pr-[10px] mx-5">
+        <View className="flex-row items-center bg-[#FEF9EC] rounded-xl pt-5 pb-5 pl-5 pr-2.5 mx-5">
           <View className="flex-1 pr-3">
             <Text className="body-sm mb-1">Daily goal</Text>
             <View className="flex-row items-baseline mb-3">
-              <Text className="font-poppins-bold text-[28px] text-text-primary leading-[34px]">{CURRENT_XP}</Text>
+              <Text className="font-poppins-bold text-[28px] text-text-primary leading-8.5">{CURRENT_XP}</Text>
               <Text className="font-poppins text-[15px] text-text-secondary"> / {DAILY_GOAL_XP} XP</Text>
             </View>
             <View className="h-2 bg-[#FFD9A0] rounded-xs overflow-hidden">
@@ -146,7 +147,7 @@ export default function HomeScreen() {
           </View>
           <Image
             source={images.treasure}
-            className="w-[76px] h-[76px]"
+            className="w-19 h-19"
             resizeMode="contain"
           />
         </View>
@@ -154,7 +155,7 @@ export default function HomeScreen() {
         {/* ── Continue Learning Card ──────────────────────── */}
         {currentLesson && (
           <View
-            className="flex-row h-[180px] bg-lingua-purple rounded-[24px] mx-5 overflow-hidden"
+            className="flex-row h-45 bg-lingua-purple rounded-6 mx-5 overflow-hidden"
             style={{
               shadowColor: "#6c4ef5",
               shadowOffset: { width: 0, height: 8 },
@@ -163,9 +164,9 @@ export default function HomeScreen() {
               elevation: 8,
             }}
           >
-            <View className="flex-1 py-[22px] pl-[22px] pr-[10px] justify-center">
-              <Text className="font-poppins text-[12px] text-white/75 mb-0.5">Continue learning</Text>
-              <Text className="font-poppins-bold text-2xl text-white leading-[30px]">
+            <View className="flex-1 py-5.5 pl-5.5 pr-2.5 justify-center">
+              <Text className="font-poppins text-xs text-white/75 mb-0.5">Continue learning</Text>
+              <Text className="font-poppins-bold text-2xl text-white leading-7.5">
                 {selectedLanguage.name}
               </Text>
               <Text className="font-poppins text-[13px] text-white/75 mt-0.5">
@@ -173,7 +174,7 @@ export default function HomeScreen() {
                 {languageUnit?.title ?? "Unit 1"}
               </Text>
               <TouchableOpacity
-                className="bg-white rounded-full px-[22px] py-[10px] self-start mt-4"
+                className="bg-white rounded-full px-5.5 py-2.5 self-start mt-4"
                 activeOpacity={0.85}
                 onPress={() =>
                   router.push(`/lesson/${currentLesson.id}` as never)
@@ -184,7 +185,7 @@ export default function HomeScreen() {
             </View>
             <Image
               source={images.palace}
-              className="w-[140px] h-[180px]"
+              className="w-35 h-45"
               resizeMode="contain"
             />
           </View>
@@ -192,14 +193,14 @@ export default function HomeScreen() {
 
         {/* ── Today's Plan ────────────────────────────────── */}
         <View className="px-5">
-          <View className="flex-row items-center justify-between mb-[14px]">
+          <View className="flex-row items-center justify-between mb-3.5">
             <Text className="font-poppins-semibold text-[17px] text-text-primary">{"Today's plan"}</Text>
             <TouchableOpacity activeOpacity={0.7}>
               <Text className="font-poppins-medium text-[13px] text-lingua-purple">View all</Text>
             </TouchableOpacity>
           </View>
           <View
-            className="bg-white rounded-[18px] overflow-hidden"
+            className="bg-white rounded-4.5 overflow-hidden"
             style={{
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 2 },

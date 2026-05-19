@@ -13,7 +13,7 @@ type AudioCallBody = {
   userImage?: string;
 };
 
-const callType = "audio_room";
+const callType = "default";
 const streamVideoBaseUrl = "https://video.stream-io-api.com";
 const streamChatBaseUrl = "https://chat.stream-io-api.com";
 
@@ -200,6 +200,12 @@ export async function POST(request: Request) {
         data: {
           created_by_id: userId,
           video: false,
+          settings_override: {
+            transcription: {
+              mode: "available",
+              closed_caption_mode: "available",
+            },
+          },
           members: [
             { user_id: userId, role: "user" },
             { user_id: AGENT_USER_ID, role: "host" },
@@ -218,25 +224,6 @@ export async function POST(request: Request) {
           },
         },
       },
-    });
-
-    await streamApiFetch({
-      apiKey,
-      secret: apiSecret,
-      url: streamVideoBaseUrl,
-      path: `/api/v2/video/call/${callType}/${callId}/user_permissions`,
-      body: {
-        user_id: AGENT_USER_ID,
-        grant_permissions: ["send-audio"],
-      },
-    });
-
-    await streamApiFetch({
-      apiKey,
-      secret: apiSecret,
-      url: streamVideoBaseUrl,
-      path: `/api/v2/video/call/${callType}/${callId}/go_live`,
-      body: {},
     });
 
     const now = Math.floor(Date.now() / 1000);

@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { ClerkProvider } from "@clerk/expo";
+import { ClerkProvider, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { Stack, usePathname } from "expo-router";
 import { useFonts } from "expo-font";
@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { PostHogProvider, usePostHog } from "posthog-react-native";
+import { identifyAuthenticatedUser } from "@/lib/analytics";
+import { useLanguageStore } from "@/store/languageStore";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,6 +30,24 @@ function ScreenTracker() {
       posthog.screen(pathname);
     }
   }, [pathname, posthog]);
+
+  return null;
+}
+
+function AuthenticatedUserTracker() {
+  const posthog = usePostHog();
+  const { isSignedIn, user } = useUser();
+  const { selectedLanguageId } = useLanguageStore();
+
+  useEffect(() => {
+    if (!isSignedIn || !user?.id) return;
+
+    identifyAuthenticatedUser({
+      posthog,
+      preferredLanguageId: selectedLanguageId,
+      userId: user.id,
+    });
+  }, [isSignedIn, posthog, selectedLanguageId, user?.id]);
 
   return null;
 }
@@ -65,6 +85,7 @@ export default function RootLayout() {
       >
         <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
           <ScreenTracker />
+          <AuthenticatedUserTracker />
           <Stack screenOptions={{ headerShown: false }} />
         </ClerkProvider>
       </PostHogProvider>

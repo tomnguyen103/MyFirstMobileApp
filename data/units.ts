@@ -46,6 +46,21 @@ export const units: Unit[] = [
       "ja-unit-1-lesson-6",
     ],
   },
+  {
+    id: "vi-unit-1",
+    languageId: "vi",
+    title: "Basics 1",
+    description: "Learn your first Vietnamese words and greetings.",
+    order: 1,
+    lessonIds: [
+      "vi-unit-1-lesson-1",
+      "vi-unit-1-lesson-2",
+      "vi-unit-1-lesson-3",
+      "vi-unit-1-lesson-4",
+      "vi-unit-1-lesson-5",
+      "vi-unit-1-lesson-6",
+    ],
+  },
 ];
 
 export function getUnitsByLanguage(languageId: string): Unit[] {

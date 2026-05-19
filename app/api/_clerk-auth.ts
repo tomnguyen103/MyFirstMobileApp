@@ -37,7 +37,7 @@ export async function verifyClerkJwt(authHeader: string | null): Promise<string 
   const jwksRes = await fetch(clerkJwksUrl());
   if (!jwksRes.ok) return null;
 
-  const { keys } = (await jwksRes.json()) as { keys: Array<JsonWebKey & { kid?: string }> };
+  const { keys } = (await jwksRes.json()) as { keys: (JsonWebKey & { kid?: string })[] };
   const jwk = keys.find((k) => k.kid === header.kid);
   if (!jwk) return null;
 

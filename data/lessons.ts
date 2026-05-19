@@ -51,11 +51,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "¡Hola! I'm your AI Spanish teacher. Today we're going to learn how to greet people in Spanish.",
+        "Hey! I'm your Spanish teacher — let's kick things off with the most useful skill in any language: how to say hello!",
       instructions:
-        "Listen carefully as I pronounce each greeting. Repeat after me and pay attention to the accent marks — they change the stress of the word.",
+        "I'll say each greeting, give you the meaning, and then I'd love for you to say it back — just give it a try!",
       encouragement:
-        "You're doing great! Greetings are the foundation of every conversation. ¡Muy bien!",
+        "You're doing great! These greetings will take you so far — ¡muy bien!",
     },
   },
   {
@@ -93,11 +93,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Welcome back! Today we're going to expand your vocabulary with common everyday words.",
+        "Welcome back! Today we're learning some super handy everyday words — numbers and things you'll see around the house.",
       instructions:
-        "I'll say each word and its meaning. Try to create a mental image for each word — it helps you remember them faster.",
+        "I'll give you the Spanish word and what it means — picture it in your head and repeat it back when you're ready.",
       encouragement:
-        "Every word you learn is a step closer to fluency. ¡Sigue adelante!",
+        "Nicely done! Every word you pick up brings you closer to sounding like a local — ¡sigue adelante!",
     },
   },
   {
@@ -145,11 +145,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "¡Bienvenido! Today we visit a Spanish café. I'll teach you how to order like a local.",
+        "Hola! Imagine you're sitting at a cozy café in Madrid — that's exactly where today's lesson takes us!",
       instructions:
-        "Café culture is huge in Spanish-speaking countries. These phrases will help you feel at home in any café.",
+        "I'll walk you through how to order, and then it's your turn — don't worry if it's not perfect, we'll figure it out together.",
       encouragement:
-        "¡Excelente! You're ready to order at any café. ¡Buen provecho!",
+        "Excellent! You're practically ready to stroll into any café in Spain — ¡buen provecho!",
     },
   },
   {
@@ -197,11 +197,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "¡Hola viajero! Today we learn how to navigate Spanish cities with confidence.",
+        "¡Hola! Let's say you're wandering through a beautiful Spanish city — today I'll teach you how to ask for directions.",
       instructions:
-        "Knowing directions is essential when travelling. Practice these phrases out loud to build confidence.",
+        "I'll say each phrase with the translation, and then I'd love for you to try it back — slow is totally fine!",
       encouragement:
-        "¡Muy bien! You can now ask for directions in Spanish. Keep exploring!",
+        "Yes! You've got this — now you can navigate like a local. ¡Muy bien!",
     },
   },
   {
@@ -249,11 +249,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "¡Vamos de compras! Today we head to a Spanish market to practice shopping phrases.",
+        "¡Hola! Picture a bustling Spanish market — today we're learning how to shop and ask about prices!",
       instructions:
-        "In many Spanish-speaking countries, bargaining is common. These phrases will help you shop confidently.",
+        "I'll introduce each phrase step by step, and whenever you're ready, give it a go — I'll gently guide you if needed.",
       encouragement:
-        "¡Fantástico! You're now a savvy Spanish shopper. ¡Buen trabajo!",
+        "Fantastic! You're shopping like a pro now — ¡buen trabajo!",
     },
   },
   {
@@ -301,11 +301,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "¡Hola familia! Today we talk about the people closest to you — family and friends.",
+        "¡Hola! Today we're talking about the people who matter most — your family and friends.",
       instructions:
-        "Family vocabulary is used every day. Practice introducing your family members in Spanish.",
+        "I'll say each family word with its meaning — then try using it in a sentence about your own family!",
       encouragement:
-        "¡Qué bien! You can now talk about your loved ones in Spanish. ¡Sigue así!",
+        "That's wonderful! Now you can talk about the people you love in Spanish — ¡sigue así!",
     },
   },
 
@@ -359,11 +359,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Bonjour! I'm your AI French teacher. Let's start with the most important part of any language — greetings!",
+        "Bonjour! I'm so excited to start this journey with you — let's begin with French greetings, the very first step!",
       instructions:
-        "French has nasal vowels that can be tricky. Listen closely to how I pronounce each word and imitate the sound.",
+        "I'll say each phrase nice and slowly with the translation — just repeat after me and don't worry about being perfect.",
       encouragement:
-        "Très bien! You're picking it up fast. Keep going, you're doing wonderfully!",
+        "Très bien! You're picking this up really fast — keep it up, you're doing wonderfully!",
     },
   },
   {
@@ -401,11 +401,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Bonjour encore! Today we continue building your French vocabulary with numbers and common words.",
+        "Bonjour encore! Let's build on what you know — today we're tackling numbers and everyday words you'll use constantly.",
       instructions:
-        "Pay attention to silent letters in French — many words have letters you don't pronounce. I'll highlight these as we go.",
+        "I'll say each word, explain what it means, and I'd love for you to say it back — notice the silent letters as we go!",
       encouragement:
-        "Excellent travail! You're building a strong foundation. Keep it up!",
+        "Excellent travail! You're building a really solid foundation here — keep going!",
     },
   },
   {
@@ -453,11 +453,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Bonjour! French café culture is world-famous. Let's learn how to enjoy it like a Parisian!",
+        "Bonjour! Imagine you're stepping into a beautiful Parisian café — that's exactly the scene for today's lesson!",
       instructions:
-        "In France, asking for the bill is customary — the waiter won't bring it unless you ask. Practice these phrases!",
+        "I'll show you how to order like a local — try each phrase after me and I'll help you if you get stuck.",
       encouragement:
-        "Magnifique! You're ready for a Parisian café. Bon appétit!",
+        "Magnifique! You're genuinely ready for a Parisian café now — bon appétit!",
     },
   },
   {
@@ -505,11 +505,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Bonjour voyageur! Today we navigate the beautiful streets of France in French.",
+        "Bonjour! Let's say you're wandering the streets of Paris — today I'll teach you how to ask where things are.",
       instructions:
-        "French cities are easy to navigate once you know the direction words. Let's practice!",
+        "I'll say each direction phrase with the translation — give it a try after me, even if it sounds tricky at first!",
       encouragement:
-        "Bravo! You can now find your way around France. Continuez comme ça!",
+        "Bravo! You can really find your way around now — continuez comme ça!",
     },
   },
   {
@@ -557,11 +557,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Bonjour fashionista! France is famous for its shopping. Let's learn how to shop in French.",
+        "Bonjour! France is famous for its incredible shopping — and today we're learning exactly how to do it in French!",
       instructions:
-        "French sales staff are polite and formal. These phrases will help you shop with confidence.",
+        "I'll walk through each phrase with you — try repeating after me and I'll help you sound natural.",
       encouragement:
-        "Parfait! You're ready to shop in Paris. Bon shopping!",
+        "Parfait! You're all set to shop in Paris — bon shopping!",
     },
   },
   {
@@ -609,11 +609,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Bonjour! Today we talk about the most important people in our lives — famille et amis!",
+        "Bonjour! Today we're talking about famille et amis — the people closest to your heart.",
       instructions:
-        "Family words are used every day. Practice describing your family members in French.",
+        "I'll say each family word with its meaning — then try describing your own family using what you've learned!",
       encouragement:
-        "Très bien! You can now talk about your loved ones in French. Continuez!",
+        "Très bien! You can talk about your loved ones in French now — continuez!",
     },
   },
 
@@ -667,11 +667,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "こんにちは! I'm your AI Japanese teacher. Japanese may look different, but we'll start simple with greetings you'll use every day.",
+        "こんにちは! Don't let the script worry you — today we're just focusing on how these greetings sound and what they mean.",
       instructions:
-        "Japanese is written in three scripts, but don't worry — today we focus on pronunciation and meaning. Listen carefully and repeat each phrase.",
+        "I'll say each phrase slowly and clearly with the translation — just repeat after me, nice and easy!",
       encouragement:
-        "すごい! You're doing amazing. Japanese is a beautiful language and you're already making progress!",
+        "すごい! You're genuinely doing amazing — Japanese is a beautiful language and you're already making real progress!",
     },
   },
   {
@@ -709,11 +709,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "Welcome back! Today we learn numbers and common words in Japanese.",
+        "Welcome back! Today we're learning Japanese numbers and some everyday words you'll use all the time.",
       instructions:
-        "Japanese numbers are straightforward. Once you learn 1 to 10, counting to 100 follows a simple pattern. Let's start small today.",
+        "I'll give you each word with its meaning — just picture what it looks like and say it back when you're ready.",
       encouragement:
-        "よくできました! Well done! Every word you learn connects you deeper to the Japanese language and culture.",
+        "よくできました! Seriously, well done — every word you learn connects you deeper to Japanese culture!",
     },
   },
   {
@@ -761,11 +761,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "こんにちは! Japan has amazing café culture. Let's learn how to order like a local!",
+        "こんにちは! Japan's café scene is incredible — let's learn how to order like a true local today!",
       instructions:
-        "Japanese cafés often have detailed menus with pictures. These phrases will help you order confidently.",
+        "I'll take you through the café phrases one by one with translations — give each one a try after me!",
       encouragement:
-        "すばらしい! You're ready to enjoy a Japanese café. よくできました!",
+        "すばらしい! You're totally ready to enjoy a Japanese café — よくできました!",
     },
   },
   {
@@ -813,11 +813,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "こんにちは旅人! Japan has an excellent transport system. Let's learn how to navigate it!",
+        "こんにちは! Japan's train system is amazing — and today I'll teach you how to ask for directions when you need them.",
       instructions:
-        "Japanese trains are famous for being on time. Knowing how to ask for directions will make your journey smooth.",
+        "I'll say each phrase with the translation — try saying it back to me and I'll help you with the rhythm.",
       encouragement:
-        "すごい! You can now find your way around Japan. どんどんすすもう!",
+        "すごい! You can find your way around Japan now — どんどんすすもう!",
     },
   },
   {
@@ -865,11 +865,11 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "こんにちは! Japan has incredible shopping from convenience stores to department stores. Let's learn how to shop!",
+        "こんにちは! From convenience stores to department stores, Japan's shopping is incredible — let's learn how to navigate it!",
       instructions:
-        "In Japan, prices are fixed so bargaining is uncommon. But knowing these phrases will help you shop smoothly.",
+        "I'll walk you through each shopping phrase — say it back after me and I'll help you get the sounds just right.",
       encouragement:
-        "よくできました! You're ready to shop in Japan. いっぱいかいものしよう!",
+        "よくできました! You're ready to shop in Japan — いっぱいかいものしよう!",
     },
   },
   {
@@ -917,11 +917,319 @@ export const lessons: Lesson[] = [
     ],
     aiTeacherPrompt: {
       intro:
-        "こんにちは! Today we learn about family and friendship — かぞくとともだち!",
+        "こんにちは! Today we're learning how to talk about かぞく — that means 'family', and it's one of the most important topics in any language.",
       instructions:
-        "Japanese has different words for family members depending on whether they're yours or someone else's. Today we focus on your own family.",
+        "I'll say each family word with the translation — then try using it in a simple sentence about your own family after me!",
       encouragement:
-        "すばらしい! You can now talk about your family in Japanese. がんばってください!",
+        "すばらしい! You can talk about your family in Japanese now — がんばってください!",
+    },
+  },
+
+  // ── Vietnamese ────────────────────────────────────────────────────────────
+  {
+    id: "vi-unit-1-lesson-1",
+    unitId: "vi-unit-1",
+    title: "Greetings & Introductions",
+    description: "Say hello and introduce yourself in Vietnamese.",
+    xpReward: 10,
+    goals: [
+      { description: "Learn basic Vietnamese greetings" },
+      { description: "Practice polite introductions" },
+    ],
+    activities: [
+      {
+        type: "vocabulary",
+        items: [
+          { word: "Xin chào", translation: "Hello", example: "Xin chào, bạn khỏe không?" },
+          { word: "Tạm biệt", translation: "Goodbye", example: "Tạm biệt, hẹn gặp lại." },
+          { word: "Chào buổi sáng", translation: "Good morning", example: "Chào buổi sáng, cô Lan." },
+          { word: "Cảm ơn", translation: "Thank you", example: "Cảm ơn bạn rất nhiều." },
+        ],
+      },
+      {
+        type: "phrase",
+        items: [
+          {
+            phrase: "Bạn khỏe không?",
+            translation: "How are you?",
+            pronunciation: "bahn khweh khom",
+          },
+          {
+            phrase: "Tôi khỏe, cảm ơn.",
+            translation: "I am well, thank you.",
+            pronunciation: "toy khweh, gahm uhn",
+          },
+          {
+            phrase: "Rất vui được gặp bạn.",
+            translation: "Nice to meet you.",
+            pronunciation: "zuht vui duhk gap bahn",
+          },
+        ],
+      },
+      {
+        type: "multiple-choice",
+        question: "How do you say 'Thank you' in Vietnamese?",
+        options: ["Xin chào", "Tạm biệt", "Cảm ơn", "Chào buổi sáng"],
+        correctIndex: 2,
+      },
+    ],
+    aiTeacherPrompt: {
+      intro:
+        "Xin chào! I'm your Vietnamese teacher. Let's start with greetings you can use right away.",
+      instructions:
+        "I'll say each phrase with the meaning, then you try it back slowly. Pay attention to the gentle tone changes.",
+      encouragement:
+        "Giỏi lắm! You're already building a friendly Vietnamese foundation.",
+    },
+  },
+  {
+    id: "vi-unit-1-lesson-2",
+    unitId: "vi-unit-1",
+    title: "Daily Life",
+    description: "Learn everyday Vietnamese words used around the house and city.",
+    xpReward: 10,
+    goals: [
+      { description: "Learn numbers 1 to 5 in Vietnamese" },
+      { description: "Learn common everyday nouns" },
+    ],
+    activities: [
+      {
+        type: "vocabulary",
+        items: [
+          { word: "một", translation: "one" },
+          { word: "hai", translation: "two" },
+          { word: "ba", translation: "three" },
+          { word: "nước", translation: "water", example: "Cho tôi nước, làm ơn." },
+          { word: "nhà", translation: "house", example: "Nhà của tôi ở gần đây." },
+        ],
+      },
+      {
+        type: "translation",
+        prompt: "Translate: 'Water, please.'",
+        answer: "Cho tôi nước, làm ơn.",
+      },
+      {
+        type: "multiple-choice",
+        question: "What does 'nhà' mean?",
+        options: ["Water", "House", "Friend", "Food"],
+        correctIndex: 1,
+      },
+    ],
+    aiTeacherPrompt: {
+      intro:
+        "Welcome back! Today we're learning Vietnamese numbers and everyday words you'll hear constantly.",
+      instructions:
+        "I'll say each word clearly with its meaning. Repeat after me and picture the word in a real-life moment.",
+      encouragement:
+        "Tốt lắm! These everyday words will help you understand Vietnamese faster.",
+    },
+  },
+  {
+    id: "vi-unit-1-lesson-3",
+    unitId: "vi-unit-1",
+    title: "At the Café",
+    description: "Order food and drinks at a Vietnamese café.",
+    xpReward: 10,
+    goals: [
+      { description: "Learn café and restaurant vocabulary in Vietnamese" },
+      { description: "Practice ordering food and drinks" },
+    ],
+    activities: [
+      {
+        type: "vocabulary",
+        items: [
+          { word: "cà phê", translation: "coffee", example: "Cho tôi một ly cà phê." },
+          { word: "trà", translation: "tea", example: "Tôi thích trà nóng." },
+          { word: "nhân viên", translation: "staff / waiter", example: "Nhân viên rất thân thiện." },
+          { word: "thực đơn", translation: "menu", example: "Cho tôi xem thực đơn." },
+          { word: "hóa đơn", translation: "bill / check", example: "Cho tôi hóa đơn, làm ơn." },
+        ],
+      },
+      {
+        type: "phrase",
+        items: [
+          {
+            phrase: "Cho tôi hóa đơn, làm ơn.",
+            translation: "Can I have the bill, please?",
+            pronunciation: "cho toy hwa don, lahm uhn",
+          },
+          {
+            phrase: "Tôi muốn gọi món.",
+            translation: "I would like to order.",
+            pronunciation: "toy muon goy mon",
+          },
+        ],
+      },
+      {
+        type: "multiple-choice",
+        question: "What does 'cà phê' mean?",
+        options: ["Tea", "Menu", "Coffee", "Bill"],
+        correctIndex: 2,
+      },
+    ],
+    aiTeacherPrompt: {
+      intro:
+        "Xin chào! Imagine you're at a cozy Vietnamese café. Today we'll learn how to order with confidence.",
+      instructions:
+        "I'll introduce each café phrase with its meaning, then you repeat it after me at a comfortable pace.",
+      encouragement:
+        "Tuyệt vời! You're ready to enjoy a Vietnamese café moment.",
+    },
+  },
+  {
+    id: "vi-unit-1-lesson-4",
+    unitId: "vi-unit-1",
+    title: "Travel & Directions",
+    description: "Ask for and understand directions in Vietnamese.",
+    xpReward: 10,
+    goals: [
+      { description: "Learn direction and transport vocabulary in Vietnamese" },
+      { description: "Practice asking for directions" },
+    ],
+    activities: [
+      {
+        type: "vocabulary",
+        items: [
+          { word: "sân bay", translation: "airport", example: "Sân bay ở đâu?" },
+          { word: "khách sạn", translation: "hotel", example: "Khách sạn gần đây không?" },
+          { word: "bản đồ", translation: "map", example: "Tôi cần một bản đồ." },
+          { word: "phía bắc", translation: "north", example: "Đi về phía bắc." },
+          { word: "bên phải", translation: "right", example: "Rẽ bên phải." },
+        ],
+      },
+      {
+        type: "phrase",
+        items: [
+          {
+            phrase: "Nhà ga ở đâu?",
+            translation: "Where is the station?",
+            pronunciation: "nya ga uh dau",
+          },
+          {
+            phrase: "Rẽ trái, làm ơn.",
+            translation: "Turn left, please.",
+            pronunciation: "zeh chai, lahm uhn",
+          },
+        ],
+      },
+      {
+        type: "multiple-choice",
+        question: "What does 'bên phải' mean?",
+        options: ["Left", "North", "Right", "South"],
+        correctIndex: 2,
+      },
+    ],
+    aiTeacherPrompt: {
+      intro:
+        "Xin chào! Let's pretend you're exploring a city in Vietnam and need to ask for directions.",
+      instructions:
+        "I'll say each travel phrase with the translation. Try repeating it, and we'll keep the rhythm simple.",
+      encouragement:
+        "Hay quá! You can now ask your way around in Vietnamese.",
+    },
+  },
+  {
+    id: "vi-unit-1-lesson-5",
+    unitId: "vi-unit-1",
+    title: "Shopping",
+    description: "Buy things and ask about prices in Vietnamese.",
+    xpReward: 10,
+    goals: [
+      { description: "Learn shopping vocabulary in Vietnamese" },
+      { description: "Practice asking for prices" },
+    ],
+    activities: [
+      {
+        type: "vocabulary",
+        items: [
+          { word: "cửa hàng", translation: "shop / store", example: "Cửa hàng này mở cửa." },
+          { word: "giá", translation: "price", example: "Giá bao nhiêu?" },
+          { word: "giảm giá", translation: "discount", example: "Có giảm giá không?" },
+          { word: "đắt", translation: "expensive", example: "Cái này hơi đắt." },
+          { word: "rẻ", translation: "cheap / inexpensive", example: "Cái này rất rẻ." },
+        ],
+      },
+      {
+        type: "phrase",
+        items: [
+          {
+            phrase: "Cái này bao nhiêu tiền?",
+            translation: "How much does this cost?",
+            pronunciation: "gai nay bao nyew tyen",
+          },
+          {
+            phrase: "Có kích cỡ khác không?",
+            translation: "Do you have another size?",
+            pronunciation: "gaw kik guh khak khom",
+          },
+        ],
+      },
+      {
+        type: "multiple-choice",
+        question: "What does 'rẻ' mean?",
+        options: ["Expensive", "Discount", "Cheap", "Price"],
+        correctIndex: 2,
+      },
+    ],
+    aiTeacherPrompt: {
+      intro:
+        "Xin chào! Vietnamese markets are lively and fun, so today we'll practice shopping and asking prices.",
+      instructions:
+        "I'll guide you through each shopping phrase. Repeat after me and imagine you're pointing to something you want to buy.",
+      encouragement:
+        "Xuất sắc! You're ready to shop in Vietnamese.",
+    },
+  },
+  {
+    id: "vi-unit-1-lesson-6",
+    unitId: "vi-unit-1",
+    title: "Family & Friends",
+    description: "Talk about your family and friends in Vietnamese.",
+    xpReward: 10,
+    goals: [
+      { description: "Learn family member vocabulary in Vietnamese" },
+      { description: "Describe your family in Vietnamese" },
+    ],
+    activities: [
+      {
+        type: "vocabulary",
+        items: [
+          { word: "gia đình", translation: "family", example: "Gia đình tôi rất vui vẻ." },
+          { word: "mẹ", translation: "mother", example: "Mẹ tôi rất tốt." },
+          { word: "bố", translation: "father", example: "Bố tôi làm việc nhiều." },
+          { word: "anh trai", translation: "older brother", example: "Tôi có một anh trai." },
+          { word: "bạn", translation: "friend", example: "Bạn tôi học tiếng Việt." },
+        ],
+      },
+      {
+        type: "phrase",
+        items: [
+          {
+            phrase: "Đây là gia đình tôi.",
+            translation: "This is my family.",
+            pronunciation: "day lah za din toy",
+          },
+          {
+            phrase: "Tôi có hai anh em.",
+            translation: "I have two siblings.",
+            pronunciation: "toy gaw high anh em",
+          },
+        ],
+      },
+      {
+        type: "multiple-choice",
+        question: "What does 'gia đình' mean?",
+        options: ["Friend", "Family", "Father", "Mother"],
+        correctIndex: 1,
+      },
+    ],
+    aiTeacherPrompt: {
+      intro:
+        "Xin chào! Today we're talking about family and friends, one of the warmest topics in Vietnamese.",
+      instructions:
+        "I'll say each family word with its meaning. Then try using it in a short sentence about someone you know.",
+      encouragement:
+        "Rất tốt! You can now talk about people you care about in Vietnamese.",
     },
   },
 ];

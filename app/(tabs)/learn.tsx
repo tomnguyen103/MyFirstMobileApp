@@ -45,17 +45,17 @@ function LessonCard({
         <View className="flex-row items-center px-5 py-4 gap-4">
           {/* Left: lesson info */}
           <View className="flex-1">
-            <Text className="caption mb-[3px]">Lesson {index + 1}</Text>
-            <Text className="font-poppins-semibold text-[15px] text-text-primary leading-[21px]">
+            <Text className="caption mb-0.75">Lesson {index + 1}</Text>
+            <Text className="font-poppins-semibold text-[15px] text-text-primary leading-5.25">
               {lesson.title}
             </Text>
-            <Text className="body-sm mt-[2px]">
+            <Text className="body-sm mt-0.5">
               {lesson.activities.length} activities • {lesson.xpReward} XP
             </Text>
             {isInProgress && (
-              <View className="flex-row mt-[6px]">
+              <View className="flex-row mt-1.5">
                 <View
-                  className="rounded-full px-[10px] py-[3px]"
+                  className="rounded-full px-2.5 py-0.75"
                   style={styles.inProgressBadge}
                 >
                   <Text style={styles.inProgressBadgeText}>In progress</Text>
@@ -124,10 +124,10 @@ export default function LearnScreen() {
         {/* ── Unit header ─────────────────────────────────── */}
         <View className="px-5 pt-5 pb-3 flex-row items-start justify-between">
           <View className="flex-1 pr-3">
-            <Text className="font-poppins-bold text-[22px] text-text-primary leading-[28px]">
+            <Text className="font-poppins-bold text-[22px] text-text-primary leading-7">
               {unit?.title ?? "Basics 1"}
             </Text>
-            <Text className="body-sm mt-[3px]">
+            <Text className="body-sm mt-0.75">
               {selectedLanguage.name} · Unit 1 · {completedCount} /{" "}
               {unitLessons.length} lessons
             </Text>
@@ -159,7 +159,7 @@ export default function LearnScreen() {
           {(["lessons", "practice"] as Tab[]).map((tab) => (
             <TouchableOpacity
               key={tab}
-              className="flex-1 items-center pt-[14px] pb-[12px] relative"
+              className="flex-1 items-center pt-3.5 pb-3 relative"
               activeOpacity={0.8}
               onPress={() => setActiveTab(tab)}
             >
@@ -185,7 +185,7 @@ export default function LearnScreen() {
         {/* ── Content ───────────────────────────────────── */}
         {activeTab === "lessons" ? (
           <View
-            className="mx-5 mt-5 bg-white rounded-[18px] overflow-hidden"
+            className="mx-5 mt-5 bg-white rounded-4.5 overflow-hidden"
             style={styles.lessonListCard}
           >
             {unitLessons.map((lesson, index) => (
