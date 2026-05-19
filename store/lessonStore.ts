@@ -27,6 +27,10 @@ export const useLessonStore = create<LessonState>()(
         "ja-unit-1-lesson-1": "completed",
         "ja-unit-1-lesson-2": "completed",
         "ja-unit-1-lesson-3": "in_progress",
+        // Vietnamese
+        "vi-unit-1-lesson-1": "completed",
+        "vi-unit-1-lesson-2": "completed",
+        "vi-unit-1-lesson-3": "in_progress",
       },
       _hasHydrated: false,
       setLessonStatus: (lessonId, status) =>

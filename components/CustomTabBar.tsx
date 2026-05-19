@@ -79,7 +79,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
         elevation: 10,
       }}
     >
-      <View className="flex-row h-[68px] items-center relative">
+      <View className="flex-row h-17 items-center relative">
         {/* Sliding active circle */}
         <Animated.View style={[styles.circle, animatedCircleStyle]} />
 
@@ -101,7 +101,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                 color={isActive ? "#ffffff" : "#9ca3af"}
               />
               {!isActive && (
-                <Text className="font-poppins text-[10px] text-[#9ca3af] mt-[3px]" numberOfLines={1}>
+                <Text className="font-poppins text-[10px] text-[#9ca3af] mt-0.75" numberOfLines={1}>
                   {tab.label}
                 </Text>
               )}

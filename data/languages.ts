@@ -25,4 +25,12 @@ export const languages: Language[] = [
     totalUnits: 1,
     learners: "12.7M learners",
   },
+  {
+    id: "vi",
+    name: "Vietnamese",
+    nativeName: "Tiếng Việt",
+    flag: "https://flagcdn.com/w320/vn.png",
+    totalUnits: 1,
+    learners: "8.2M learners",
+  },
 ];

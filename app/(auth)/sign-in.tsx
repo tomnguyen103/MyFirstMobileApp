@@ -127,7 +127,7 @@ export default function SignInScreen() {
 
             {/* Form */}
             <View className="mt-5">
-              <View className="border border-border rounded-xl px-4 pt-[10px] pb-3">
+              <View className="border border-border rounded-xl px-4 pt-2.5 pb-3">
                 <Text className="caption mb-1">Email</Text>
                 <TextInput
                   value={email}
@@ -165,9 +165,9 @@ export default function SignInScreen() {
 
             {/* Divider */}
             <View className="flex-row items-center gap-3 mt-6">
-              <View className="flex-1 h-[1px] bg-border" />
+              <View className="flex-1 h-px bg-border" />
               <Text className="caption text-text-secondary">or continue with</Text>
-              <View className="flex-1 h-[1px] bg-border" />
+              <View className="flex-1 h-px bg-border" />
             </View>
 
             {/* Social buttons */}
@@ -233,7 +233,7 @@ function SocialButton({
   return (
     <TouchableOpacity
       activeOpacity={0.85}
-      className="flex-row items-center border border-border rounded-xl py-[14px] px-4 bg-white"
+      className="flex-row items-center border border-border rounded-xl py-3.5 px-4 bg-white"
       onPress={onPress}
     >
       {iconElement ?? <Ionicons name={icon!} size={20} color={iconColor} />}

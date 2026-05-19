@@ -15,6 +15,8 @@ import { Image, Text, TextInput, TouchableOpacity, View } from "@/components/tw"
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
 import GoogleIcon from "@/components/GoogleIcon";
+import { identifyAuthenticatedUser } from "@/lib/analytics";
+import { useLanguageStore } from "@/store/languageStore";
 
 const SSO_METHOD = {
   oauth_google: "google",
@@ -35,6 +37,7 @@ export default function SignUpScreen() {
   const { signUp, errors, fetchStatus } = useSignUp();
   const { startSSOFlow } = useSSO();
   const posthog = usePostHog();
+  const { selectedLanguageId } = useLanguageStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,7 +73,13 @@ export default function SignUpScreen() {
 
     if (signUp.status === "complete") {
       if (signUp.createdUserId) {
-        posthog.identify(signUp.createdUserId, { email });
+        identifyAuthenticatedUser({
+          email,
+          isSignUp: true,
+          posthog,
+          preferredLanguageId: selectedLanguageId,
+          userId: signUp.createdUserId,
+        });
       }
       posthog.capture("signup_completed", { method: "email" });
       await signUp.finalize({
@@ -96,13 +105,21 @@ export default function SignUpScreen() {
     posthog.capture("signup_attempted", { method });
 
     try {
-      const { createdSessionId, setActive } = await startSSOFlow({
+      const { createdSessionId, setActive, signUp: ssoSignUp } = await startSSOFlow({
         strategy,
         redirectUrl: oauthRedirectUrl,
       });
       if (createdSessionId && setActive) {
         await setActive({ session: createdSessionId });
         await WebBrowser.dismissBrowser();
+        if (ssoSignUp?.createdUserId) {
+          identifyAuthenticatedUser({
+            isSignUp: true,
+            posthog,
+            preferredLanguageId: selectedLanguageId,
+            userId: ssoSignUp.createdUserId,
+          });
+        }
         posthog.capture("signup_completed", { method });
         router.replace("/");
       }
