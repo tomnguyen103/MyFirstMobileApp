@@ -91,6 +91,7 @@ export function useStreamAudioCall({
   const clientRef = useRef<StreamVideoClient | null>(null);
   const callRef = useRef<Call | null>(null);
   const unsubscribeCaptionsRef = useRef<(() => void) | null>(null);
+  const talkRequestIdRef = useRef(0);
   // Stable refs so callbacks never change identity when state does
   const getTokenRef = useRef(getToken);
   getTokenRef.current = getToken;
@@ -392,6 +393,7 @@ export function useStreamAudioCall({
           micError instanceof Error ? micError.message : "Unable to enable microphone."
         );
         setStatus("error");
+        await cleanupCall();
         return;
       }
       setIsMuted(true);
@@ -440,10 +442,11 @@ export function useStreamAudioCall({
           : "Unable to join the Stream audio call."
       );
       setStatus("error");
+      await cleanupCall();
     }
   // All mutable values read from refs; getToken accessed via getTokenRef
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appendCaption]);
+  }, [appendCaption, cleanupCall]);
 
   // Push-to-talk: hold to speak, release to mute.
   // Both callbacks are stable (read live state via refs).
@@ -451,8 +454,10 @@ export function useStreamAudioCall({
     const currentCall = callRef.current;
     if (!currentCall || statusRef.current !== "joined") return;
 
+    const token = ++talkRequestIdRef.current;
     try {
       await currentCall.microphone.enable();
+      if (talkRequestIdRef.current !== token) return;
       setIsMuted(false);
       setIsListening(true);
     } catch {
@@ -465,8 +470,10 @@ export function useStreamAudioCall({
     const currentCall = callRef.current;
     if (!currentCall) return;
 
+    const token = ++talkRequestIdRef.current;
     try {
       await currentCall.microphone.disable();
+      if (talkRequestIdRef.current !== token) return;
       setIsMuted(true);
       setIsListening(false);
     } catch {
