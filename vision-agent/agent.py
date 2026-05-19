@@ -6,6 +6,7 @@ from typing import Any
 from dotenv import load_dotenv
 from openai import RateLimitError, AuthenticationError
 from vision_agents.core import Agent, AgentLauncher, User, Runner
+from vision_agents.core.instructions import Instructions
 from vision_agents.core.llm.events import RealtimeUserSpeechTranscriptionEvent
 from vision_agents.plugins import getstream, openai
 
@@ -106,7 +107,7 @@ async def join_call(
     await call.get()
     lesson_context = build_lesson_context(call.custom_data or {})
 
-    agent.instructions = build_agent_instructions(lesson_context=lesson_context)
+    agent.instructions = Instructions(input_text=build_agent_instructions(lesson_context=lesson_context))
 
     _END_PHRASES = frozenset((
         "goodbye", "bye", "end lesson", "stop lesson",

@@ -201,7 +201,7 @@ export async function POST(request: Request) {
           created_by_id: userId,
           video: false,
           members: [
-            { user_id: userId, role: "call-member" },
+            { user_id: userId, role: "user" },
             { user_id: AGENT_USER_ID, role: "host" },
           ],
           custom: {
