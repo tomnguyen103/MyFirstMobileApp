@@ -41,6 +41,6 @@ export function getLessonAnalyticsContext(lesson: Lesson) {
   return {
     languageCode: unit?.languageId ?? "unknown",
     languageName: language?.name ?? "Language",
-    lessonNumber: lessonIndex >= 0 ? lessonIndex + 1 : 1,
+    lessonNumber: lessonIndex >= 0 ? lessonIndex + 1 : 0,
   };
 }

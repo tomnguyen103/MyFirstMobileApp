@@ -68,8 +68,9 @@ function getCallStatusCopy(status: AudioCallStatus) {
 function getPrimaryActionLabel(status: AudioCallStatus) {
   switch (status) {
     case "loading":
-    case "ready":
       return "Starting...";
+    case "ready":
+      return "Join call";
     case "connecting":
       return "Connecting...";
     case "joined":
@@ -137,7 +138,11 @@ export default function AITeacherScreen() {
 
   useEffect(() => {
     const latest = captions[captions.length - 1];
-    if (!latest) return;
+    if (!latest) {
+      if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
+      setVisibleCaption(null);
+      return;
+    }
     setVisibleCaption(latest);
     if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
     clearTimerRef.current = setTimeout(() => setVisibleCaption(null), 4500);

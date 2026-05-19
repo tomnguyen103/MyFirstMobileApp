@@ -90,8 +90,9 @@ function RoundControl({
 function getPrimaryActionLabel(status: AudioCallStatus) {
   switch (status) {
     case "loading":
-    case "ready":
       return "Starting...";
+    case "ready":
+      return "Join call";
     case "connecting":
       return "Connecting...";
     case "joined":

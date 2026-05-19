@@ -15,7 +15,11 @@ export function LiveCaptionsCard({ captions, isCaptioning, isListening }: LiveCa
 
   useEffect(() => {
     const latest = captions[captions.length - 1];
-    if (!latest) return;
+    if (!latest) {
+      if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
+      setVisibleCaption(null);
+      return;
+    }
 
     setVisibleCaption(latest);
 

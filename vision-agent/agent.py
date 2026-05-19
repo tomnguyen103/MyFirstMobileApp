@@ -147,12 +147,6 @@ async def join_call(
 
     try:
         async with agent.join(call):
-            await agent.simple_response(
-                "Warmly greet the student, introduce yourself as their language teacher in one short sentence, "
-                "name today's lesson topic and target language, then immediately introduce the very first vocabulary word "
-                "with its English translation and ask the student to repeat it — keep it to two sentences total."
-            )
-
             # Queue final speech transcriptions so we can react to each student turn.
             transcript_queue: asyncio.Queue[str] = asyncio.Queue()
 
@@ -162,19 +156,25 @@ async def join_call(
                     if text:
                         await transcript_queue.put(text)
                     # Signal client to clear partial caption for this speaker
-                    asyncio.create_task(_emit_caption("learner", "", "final"))
+                    await _emit_caption("learner", "", "final")
                 elif event.mode == "replacement" and text:
-                    asyncio.create_task(_emit_caption("learner", text, "replacement"))
+                    await _emit_caption("learner", text, "replacement")
 
             async def _on_agent_speech(event: RealtimeAgentSpeechTranscriptionEvent):
                 text = (event.text or "").strip()
                 if event.mode == "final":
-                    asyncio.create_task(_emit_caption("teacher", "", "final"))
+                    await _emit_caption("teacher", "", "final")
                 elif event.mode == "replacement" and text:
-                    asyncio.create_task(_emit_caption("teacher", text, "replacement"))
+                    await _emit_caption("teacher", text, "replacement")
 
             agent.subscribe(_on_user_speech)
             agent.subscribe(_on_agent_speech)
+
+            await agent.simple_response(
+                "Warmly greet the student, introduce yourself as their language teacher in one short sentence, "
+                "name today's lesson topic and target language, then immediately introduce the very first vocabulary word "
+                "with its English translation and ask the student to repeat it — keep it to two sentences total."
+            )
 
             while not agent.closed:
                 try:
