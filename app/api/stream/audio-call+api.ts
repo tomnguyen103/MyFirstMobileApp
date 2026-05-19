@@ -2,13 +2,13 @@ import { getLessonById } from "@/data/lessons";
 import { languages } from "@/data/languages";
 import { units } from "@/data/units";
 import { Phrase, VocabItem } from "@/types/learning";
+import { verifyClerkJwt } from "../_clerk-auth";
 
 const AGENT_USER_ID = "language-teacher";
 
 type AudioCallBody = {
   lessonId?: string;
   languageId?: string;
-  userId?: string;
   userName?: string;
   userImage?: string;
 };
@@ -135,14 +135,15 @@ function normalizeCallId(lessonId: string, userId: string) {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as AudioCallBody;
-    const { lessonId, languageId, userId, userName, userImage } = body;
-
-    if (!request.headers.get("Authorization")) {
-      return Response.json({ error: "Missing Clerk session token." }, { status: 401 });
+    const userId = await verifyClerkJwt(request.headers.get("Authorization"));
+    if (!userId) {
+      return Response.json({ error: "Missing or invalid Clerk session token." }, { status: 401 });
     }
 
-    if (!lessonId || !languageId || !userId || !userName) {
+    const body = (await request.json()) as AudioCallBody;
+    const { lessonId, languageId, userName, userImage } = body;
+
+    if (!lessonId || !languageId || !userName) {
       return Response.json({ error: "Missing call setup details." }, { status: 400 });
     }
 
@@ -200,8 +201,8 @@ export async function POST(request: Request) {
           created_by_id: userId,
           video: false,
           members: [
-            { user_id: userId, role: "admin" },
-            { user_id: AGENT_USER_ID, role: "admin" },
+            { user_id: userId, role: "call-member" },
+            { user_id: AGENT_USER_ID, role: "host" },
           ],
           custom: {
             lessonId: lesson.id,

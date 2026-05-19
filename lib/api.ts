@@ -1,21 +1,31 @@
 import Constants from "expo-constants";
 
-function getLocalApiOrigin() {
+function getLocalApiOrigin(): string {
   const hostUri =
     Constants.expoConfig?.hostUri ??
     Constants.manifest2?.extra?.expoGo?.debuggerHost;
 
-  if (!hostUri) {
-    return "";
+  if (hostUri) {
+    try {
+      // hostUri is "host:port" with no scheme — prefix http:// so URL can parse it
+      const raw = hostUri.includes("://") ? hostUri : `http://${hostUri}`;
+      const { host } = new URL(raw);
+      return `http://${host}`;
+    } catch {
+      // fall through to env fallback
+    }
   }
 
-  const host = hostUri.split(":")[0];
-  return `http://${host}:8081`;
+  return process.env.EXPO_PUBLIC_API_BASE_URL ?? "";
 }
 
-export function getApiUrl(path: string) {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+export function getApiUrl(path: string): string {
   const origin = getLocalApiOrigin();
-
-  return origin ? `${origin}${normalizedPath}` : normalizedPath;
+  if (!origin) {
+    throw new Error(
+      "No API base URL resolved. Set EXPO_PUBLIC_API_BASE_URL or run via Expo Go."
+    );
+  }
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${origin}${normalizedPath}`;
 }

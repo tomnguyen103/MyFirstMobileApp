@@ -46,7 +46,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
     visibleRoutes.findIndex((route) => route.name === activeRoute?.name)
   );
 
-  const tabWidth = width / visibleRoutes.length;
+  const tabWidth = visibleRoutes.length > 0 ? width / visibleRoutes.length : width;
   const circleLeft = useCallback(
     (index: number) => index * tabWidth + (tabWidth - CIRCLE_SIZE) / 2,
     [tabWidth]
@@ -64,6 +64,8 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const animatedCircleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
+
+  if (visibleRoutes.length === 0) return null;
 
   return (
     <View

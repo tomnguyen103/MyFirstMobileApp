@@ -47,7 +47,7 @@ export async function createStreamAudioCall({
   if (!response.ok) {
     const message =
       "error" in data ? data.error : "Unable to prepare Stream audio call.";
-    throw new Error(message ?? "Unable to prepare Stream audio call.");
+    throw new Error(message);
   }
 
   return data as StreamAudioCallResponse;
