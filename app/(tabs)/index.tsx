@@ -1,15 +1,12 @@
 import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
 import { router } from "expo-router";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "@/components/tw";
 import { useLanguageStore } from "@/store/languageStore";
 import { languages } from "@/data/languages";
 import { units } from "@/data/units";
@@ -101,7 +98,7 @@ export default function HomeScreen() {
   const goalProgress = CURRENT_XP / DAILY_GOAL_XP;
 
   return (
-    <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       {/* ── Header ─────────────────────────────────────────── */}
       <View className="flex-row items-center justify-between px-5 py-[14px] bg-white border-b border-border">
         <View className="flex-row items-center gap-[10px]">
@@ -225,3 +222,10 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f6f7fb",
+  },
+});

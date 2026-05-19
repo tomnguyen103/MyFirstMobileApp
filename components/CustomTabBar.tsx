@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { Text, TouchableOpacity, View } from "@/components/tw";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,7 +11,6 @@ import Animated, {
 import { useCallback, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const TAB_COUNT = 5;
 const CIRCLE_SIZE = 52;
 const TAB_HEIGHT = 68;
 
@@ -20,20 +20,33 @@ type TabConfig = {
   iconInactive: React.ComponentProps<typeof Ionicons>["name"];
 };
 
-const TAB_CONFIG: TabConfig[] = [
-  { label: "Home", iconActive: "home", iconInactive: "home-outline" },
-  { label: "Learn", iconActive: "book", iconInactive: "book-outline" },
-  { label: "AI Teacher", iconActive: "school", iconInactive: "school-outline" },
-  { label: "Chat", iconActive: "chatbubble", iconInactive: "chatbubble-outline" },
-  { label: "Profile", iconActive: "person", iconInactive: "person-outline" },
-];
+const TAB_CONFIG: Record<string, TabConfig> = {
+  index: { label: "Home", iconActive: "home", iconInactive: "home-outline" },
+  learn: { label: "Learn", iconActive: "book", iconInactive: "book-outline" },
+  "ai-teacher": {
+    label: "AI Teacher",
+    iconActive: "school",
+    iconInactive: "school-outline",
+  },
+  chat: { label: "Chat", iconActive: "chatbubble", iconInactive: "chatbubble-outline" },
+  profile: { label: "Profile", iconActive: "person", iconInactive: "person-outline" },
+};
+
+const TAB_ORDER = ["index", "learn", "ai-teacher", "chat", "profile"];
 
 export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const activeIndex = state.index;
+  const activeRoute = state.routes[state.index];
+  const visibleRoutes = TAB_ORDER.map((name) =>
+    state.routes.find((route) => route.name === name)
+  ).filter((route): route is (typeof state.routes)[number] => Boolean(route));
+  const activeIndex = Math.max(
+    0,
+    visibleRoutes.findIndex((route) => route.name === activeRoute?.name)
+  );
 
-  const tabWidth = width / TAB_COUNT;
+  const tabWidth = width / visibleRoutes.length;
   const circleLeft = useCallback(
     (index: number) => index * tabWidth + (tabWidth - CIRCLE_SIZE) / 2,
     [tabWidth]
@@ -69,9 +82,9 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
         <Animated.View style={[styles.circle, animatedCircleStyle]} />
 
         {/* Tab buttons */}
-        {TAB_CONFIG.map((tab, index) => {
+        {visibleRoutes.map((route, index) => {
+          const tab = TAB_CONFIG[route.name];
           const isActive = index === activeIndex;
-          const route = state.routes[index];
 
           return (
             <TouchableOpacity

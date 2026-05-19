@@ -11,6 +11,7 @@ export default function OAuthCallback() {
 
   useEffect(() => {
     if (!isLoaded) return;
+    WebBrowser.dismissBrowser();
     if (isSignedIn) {
       router.replace("/");
     }

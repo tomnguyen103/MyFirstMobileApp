@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "@/components/tw";
 import { images } from "@/constants/images";
 import { getLessonById } from "@/data/lessons";
 import { languages } from "@/data/languages";
@@ -50,12 +51,12 @@ function RoundControl({
     <View className="items-center gap-[8px]">
       <TouchableOpacity
         activeOpacity={0.82}
-        className="h-[64px] w-[64px] items-center justify-center rounded-full"
+        className="h-[58px] w-[58px] items-center justify-center rounded-full"
         style={isDanger ? styles.dangerControl : styles.lightControl}
       >
-        <Ionicons name={icon} size={28} color="#ffffff" />
+        <Ionicons name={icon} size={24} color={isDanger ? "#ffffff" : "#001328"} />
       </TouchableOpacity>
-      <Text className="font-poppins-semibold text-[13px] leading-[18px] text-white">
+      <Text className="font-poppins-medium text-[11px] leading-[15px] text-text-secondary">
         {label}
       </Text>
     </View>
@@ -137,55 +138,49 @@ export default function AudioLessonScreen() {
         </View>
 
         {/* ── Teacher Panel ─────────────────────────────── */}
-        <View className="mx-[14px] overflow-hidden rounded-[28px]" style={styles.teacherPanel}>
-          {/* Background */}
-          <Image source={images.palace} resizeMode="cover" style={styles.panelBackground} />
-          <View style={styles.backgroundWash} />
-
-          {/* Fox teacher mascot */}
+        <View className="mx-[14px] overflow-hidden rounded-[24px]" style={styles.teacherPanel}>
           <Image
             source={images.mascotWelcome}
             resizeMode="contain"
             style={styles.teacherMascot}
           />
 
-          {/* Speech bubble */}
           <View
-            className="absolute left-[90px] right-[36px] rounded-[18px] bg-white px-[18px] py-[14px]"
+            className="absolute bottom-[14px] left-[12px] right-[12px] flex-row items-center rounded-[18px] bg-white px-[18px] py-[14px]"
             style={styles.speechBubble}
           >
-            <Text
-              className="font-poppins-semibold text-[17px] leading-[24px] text-text-primary"
-              numberOfLines={1}
-            >
-              {bubblePhrase}
-            </Text>
-            <Text
-              className="mt-[4px] pr-10 font-poppins-medium text-[14px] leading-[21px] text-text-secondary"
-              numberOfLines={2}
-            >
-              {bubbleTranslation}
-            </Text>
-            <View className="absolute right-[14px] top-[14px]">
-              <Ionicons name="volume-high" size={26} color="#5b3bf6" />
+            <View className="flex-1 pr-3">
+              <Text
+                className="font-poppins-semibold text-[17px] leading-[24px] text-text-primary"
+                numberOfLines={1}
+              >
+                {bubblePhrase}
+              </Text>
+              <Text
+                className="mt-[4px] font-poppins-medium text-[14px] leading-[21px] text-text-secondary"
+                numberOfLines={2}
+              >
+                {bubbleTranslation}
+              </Text>
             </View>
-            <View style={styles.bubbleTail} />
-          </View>
-
-          {/* Dark overlay behind controls */}
-          <View style={styles.controlsOverlay} />
-
-          {/* Controls row */}
-          <View className="absolute bottom-[14px] left-0 right-0 flex-row justify-evenly px-[20px]">
-            <RoundControl icon="videocam" label="Camera" />
-            <RoundControl icon="mic" label="Mic" />
-            <RoundControl icon="language" label="Subtitles" />
-            <RoundControl icon="call" label="End Call" tone="danger" />
+            <TouchableOpacity
+              activeOpacity={0.8}
+              className="h-[46px] w-[46px] items-center justify-center rounded-full bg-[#eee9ff]"
+            >
+              <Ionicons name="volume-high" size={26} color="#5b3bf6" />
+            </TouchableOpacity>
           </View>
         </View>
 
+        <View className="mt-[14px] flex-row justify-between px-[32px]">
+          <RoundControl icon="videocam" label="Camera" />
+          <RoundControl icon="mic" label="Mic" />
+          <RoundControl icon="language" label="Subtitles" />
+          <RoundControl icon="call" label="End Call" tone="danger" />
+        </View>
+
         {/* ── Feedback card ─────────────────────────────── */}
-        <View className="mx-[36px] mt-[20px] rounded-[20px] bg-white px-1 py-[24px]" style={styles.feedbackCard}>
+        <View className="mx-[24px] mt-[18px] rounded-[20px] bg-white px-1 py-[20px]" style={styles.feedbackCard}>
           <View className="flex-row">
             <View className="flex-1 items-center">
               <Text className="font-poppins-semibold text-[15px] leading-[20px] text-text-primary">
@@ -265,59 +260,38 @@ const styles = StyleSheet.create({
     paddingBottom: 118,
   },
   teacherPanel: {
-    height: 510,
-    backgroundColor: "#c4aa82",
-  },
-  panelBackground: {
-    ...StyleSheet.absoluteFillObject,
-    width: "100%",
-    height: "100%",
-    opacity: 0.75,
-  },
-  backgroundWash: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(190, 160, 110, 0.20)",
+    height: 382,
+    backgroundColor: "#f2edff",
   },
   teacherMascot: {
     position: "absolute",
-    top: 90,
-    left: 0,
-    width: 340,
-    height: 330,
+    top: 46,
+    alignSelf: "center",
+    width: 250,
+    height: 250,
   },
   speechBubble: {
-    bottom: 122,
     shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  bubbleTail: {
-    position: "absolute",
-    right: 28,
-    bottom: -18,
-    width: 0,
-    height: 0,
-    borderLeftWidth: 15,
-    borderRightWidth: 0,
-    borderTopWidth: 20,
-    borderLeftColor: "transparent",
-    borderTopColor: "#ffffff",
-  },
-  controlsOverlay: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 108,
-    backgroundColor: "rgba(18, 18, 40, 0.50)",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 5,
   },
   lightControl: {
-    backgroundColor: "rgba(38, 38, 60, 0.80)",
+    backgroundColor: "#ffffff",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
   },
   dangerControl: {
-    backgroundColor: "#ff3b47",
+    backgroundColor: "#ff4d4f",
+    shadowColor: "#ff4d4f",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.22,
+    shadowRadius: 12,
+    elevation: 4,
   },
   feedbackCard: {
     shadowColor: "#000000",

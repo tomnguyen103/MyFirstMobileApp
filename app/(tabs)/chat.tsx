@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, View } from "@/components/tw";
 
 export default function ChatScreen() {
   return (

@@ -1,18 +1,20 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@clerk/expo";
 import { Redirect, router } from "expo-router";
 import { usePostHog } from "posthog-react-native";
+import { Image, Text, TouchableOpacity, View } from "@/components/tw";
 import { images } from "@/constants/images";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 export default function OnboardingScreen() {
   const { isSignedIn, isLoaded } = useAuth();
   const posthog = usePostHog();
 
-  if (!isLoaded) return null;
+  if (!isLoaded) return <LoadingScreen message="Starting up..." />;
   if (isSignedIn) return <Redirect href="/" />;
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.safeArea}>
       <View className="flex-1 px-6">
         {/* Header — left aligned */}
         <View className="flex-row items-center justify-center gap-2 pt-2">
@@ -86,6 +88,10 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
   // Platform-specific shadow syntax differs between iOS/Android — must stay in StyleSheet
   shadow: {
     shadowColor: "#000",

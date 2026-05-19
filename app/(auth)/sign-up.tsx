@@ -1,12 +1,7 @@
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth, useSignUp, useSSO } from "@clerk/expo";
@@ -14,7 +9,9 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { usePostHog } from "posthog-react-native";
 import { makeRedirectUri } from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
 import { Ionicons } from "@expo/vector-icons";
+import { Image, Text, TextInput, TouchableOpacity, View } from "@/components/tw";
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
 import GoogleIcon from "@/components/GoogleIcon";
@@ -24,6 +21,14 @@ const SSO_METHOD = {
   oauth_facebook: "facebook",
   oauth_apple: "apple",
 } as const;
+
+WebBrowser.maybeCompleteAuthSession();
+
+const oauthRedirectUrl = makeRedirectUri({
+  scheme: "myfirstmobileapp",
+  isTripleSlashed: true,
+  path: "oauth-callback",
+});
 
 export default function SignUpScreen() {
   const { isSignedIn } = useAuth();
@@ -93,10 +98,11 @@ export default function SignUpScreen() {
     try {
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy,
-        redirectUrl: makeRedirectUri({ path: "oauth-callback" }),
+        redirectUrl: oauthRedirectUrl,
       });
       if (createdSessionId && setActive) {
         await setActive({ session: createdSessionId });
+        await WebBrowser.dismissBrowser();
         posthog.capture("signup_completed", { method });
         router.replace("/");
       }
@@ -107,7 +113,7 @@ export default function SignUpScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}

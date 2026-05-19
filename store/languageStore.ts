@@ -22,8 +22,16 @@ export const useLanguageStore = create<LanguageState>()(
     {
       name: "language-storage",
       storage: createJSONStorage(() => AsyncStorage),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      partialize: (state) => ({
+        selectedLanguageId: state.selectedLanguageId,
+      }),
+      onRehydrateStorage: () => {
+        return (state) => {
+          state?.setHasHydrated(true);
+          if (!state) {
+            useLanguageStore.setState({ _hasHydrated: true });
+          }
+        };
       },
     }
   )

@@ -1,15 +1,11 @@
 import { useState } from "react";
 import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
   FlatList,
-  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { Image, Text, TextInput, TouchableOpacity, View } from "@/components/tw";
 import { languages } from "@/data/languages";
 import { Language } from "@/types/learning";
 import { images } from "@/constants/images";
@@ -61,7 +57,7 @@ export default function LanguageSelectionScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
       {/* Header */}
       <View className="flex-row items-center px-6 py-3">
         {selectedLanguageId ? (

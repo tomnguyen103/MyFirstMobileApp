@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.MyFirstMobileApp"
     },
     "web": {
       "output": "static",
@@ -41,11 +42,32 @@
       ],
       "@clerk/expo",
       "expo-secure-store",
-      "expo-localization"
+      "expo-localization",
+      "@stream-io/video-react-native-sdk",
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "cameraPermission": "$(PRODUCT_NAME) uses the camera only when video lessons are enabled.",
+          "microphonePermission": "$(PRODUCT_NAME) uses the microphone for audio language lessons."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 24
+          }
+        }
+      ]
     ],
     "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d99be155-3c8a-46db-ad8b-a1196c7e4554"
+      }
     }
   }
 }
