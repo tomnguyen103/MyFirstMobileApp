@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View } from "@/components/tw";
 
 interface Props {
   size?: number;

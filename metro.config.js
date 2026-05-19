@@ -1,4 +1,3 @@
-const { getDefaultConfig } = require("expo/metro-config");
 const { withNativewind } = require("nativewind/metro");
 const { getPostHogExpoConfig } = require("posthog-react-native/metro");
 

@@ -1,14 +1,12 @@
 import {
   Modal,
-  View,
-  Text,
   TextInput,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
-  TouchableOpacity,
 } from "react-native";
 import { useRef, useState, useEffect } from "react";
+import { Text, TouchableOpacity, View } from "@/components/tw";
 
 interface Props {
   visible: boolean;

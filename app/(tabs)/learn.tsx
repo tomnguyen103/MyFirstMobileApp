@@ -1,15 +1,9 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "@/components/tw";
 import { useLanguageStore } from "@/store/languageStore";
 import { useLessonStore, LessonStatus } from "@/store/lessonStore";
 import { languages } from "@/data/languages";
@@ -40,7 +34,12 @@ function LessonCard({
     <>
       <TouchableOpacity
         activeOpacity={0.75}
-        onPress={() => router.push(`/lesson/${lesson.id}` as never)}
+        onPress={() =>
+          router.push({
+            pathname: "/(tabs)/ai-teacher",
+            params: { lessonId: lesson.id },
+          } as never)
+        }
         style={isInProgress ? styles.cardInProgress : undefined}
       >
         <View className="flex-row items-center px-5 py-4 gap-4">

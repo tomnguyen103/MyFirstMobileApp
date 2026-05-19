@@ -6,6 +6,8 @@ import { Stack, usePathname } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StyleSheet } from "react-native";
 import { PostHogProvider, usePostHog } from "posthog-react-native";
 
 SplashScreen.preventAutoHideAsync();
@@ -49,21 +51,29 @@ export default function RootLayout() {
   }
 
   return (
-    <PostHogProvider
-      apiKey={process.env.EXPO_PUBLIC_POSTHOG_KEY!}
-      options={{
-        host: process.env.EXPO_PUBLIC_POSTHOG_HOST,
-        captureAppLifecycleEvents: true,
-      }}
-      autocapture={{
-        captureScreens: false,
-        captureTouches: false,
-      }}
-    >
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <ScreenTracker />
-        <Stack screenOptions={{ headerShown: false }} />
-      </ClerkProvider>
-    </PostHogProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <PostHogProvider
+        apiKey={process.env.EXPO_PUBLIC_POSTHOG_KEY!}
+        options={{
+          host: process.env.EXPO_PUBLIC_POSTHOG_HOST,
+          captureAppLifecycleEvents: true,
+        }}
+        autocapture={{
+          captureScreens: false,
+          captureTouches: false,
+        }}
+      >
+        <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+          <ScreenTracker />
+          <Stack screenOptions={{ headerShown: false }} />
+        </ClerkProvider>
+      </PostHogProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});
